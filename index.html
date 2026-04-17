@@ -519,366 +519,799 @@
         </div>
 
         <!-- Placeholder for other tools -->
-        <div id="crypto-converter" class="tool-panel">
-            <h2>Crypto Converter</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                    <p class="subtitle">We're working hard to bring you accurate cryptocurrency conversions.</p>
-                </div>
-            </div>
-        </div>
+<div id="crypto-converter" class="tool-panel">
+<h2>Crypto Converter</h2>
+<div class="tool-container">
+<div class="converter-row">
+<div class="currency-input">
+<input type="number" id="crypto-amount" placeholder="Enter amount" value="1">
+<select id="crypto-from">
+<option value="BTC">BTC - Bitcoin</option>
+<option value="ETH">ETH - Ethereum</option>
+<option value="USD" selected>USD - US Dollar</option>
+<option value="EUR">EUR - Euro</option>
+<option value="GBP">GBP - British Pound</option>
+</select>
+</div>
+<button onclick="swapCurrencies()" class="swap-btn" title="Swap">⇄</button>
+<div class="currency-input">
+<input type="number" id="crypto-result" readonly>
+<select id="crypto-to">
+<option value="BTC">BTC - Bitcoin</option>
+<option value="ETH">ETH - Ethereum</option>
+<option value="USD">USD - US Dollar</option>
+<option value="EUR">EUR - Euro</option>
+<option value="GBP" selected>GBP - British Pound</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateCrypto()">Convert</button>
+</div>
+<p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">Rates are approximate and for informational purposes only.</p>
+</div>
+</div>
 
-        <div id="historical-rates" class="tool-panel">
-            <h2>Historical Exchange Rates</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="historical-rates" class="tool-panel">
+<h2>Historical Exchange Rates</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Historical rate lookup requires external data APIs.</p>
+</div>
+</div>
+</div>
 
-        <div id="rent-vs-buy" class="tool-panel">
-            <h2>Rent vs Buy Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="rent-vs-buy" class="tool-panel">
+<h2>Rent vs Buy Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Monthly Rent (£):</label>
+<input type="number" id="rent-monthly" placeholder="e.g. 1200" value="1200">
+</div>
+<div class="input-group">
+<label>Property Price (£):</label>
+<input type="number" id="rent-property-price" placeholder="e.g. 300000" value="300000">
+</div>
+<div class="input-group">
+<label>Deposit (£):</label>
+<input type="number" id="rent-deposit" placeholder="e.g. 60000" value="60000">
+</div>
+<div class="input-group">
+<label>Mortgage Rate (%):</label>
+<input type="number" id="rent-mortgage-rate" placeholder="e.g. 5.5" value="5.5" step="0.01">
+</div>
+<div class="input-group">
+<label>Years to Compare:</label>
+<input type="number" id="rent-years" placeholder="e.g. 25" value="25">
+</div>
+<div class="input-group">
+<label>House Price Growth (%/yr):</label>
+<input type="number" id="rent-house-growth" placeholder="e.g. 3" value="3" step="0.1">
+</div>
+<div class="input-group">
+<label>Rent Growth (%/yr):</label>
+<input type="number" id="rent-growth" placeholder="e.g. 2" value="2" step="0.1">
+</div>
+<div class="input-group">
+<label>Investment Return (%/yr):</label>
+<input type="number" id="rent-investment-return" placeholder="e.g. 5" value="5" step="0.1">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateRentVsBuy()">Compare</button>
+</div>
+<div id="rent-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="stamp-duty" class="tool-panel">
-            <h2>Stamp Duty Calculator (UK)</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="stamp-duty" class="tool-panel">
+<h2>Stamp Duty Calculator (UK)</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Property Price (£):</label>
+<input type="number" id="stamp-price" placeholder="e.g. 400000" value="400000">
+</div>
+<div class="input-group">
+<label>Buyer Type:</label>
+<select id="stamp-buyer-type">
+<option value="first">First-time Buyer</option>
+<option value="standard" selected>Standard Purchase</option>
+<option value="additional">Additional Property (BTL/Second Home)</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateStampDuty()">Calculate</button>
+</div>
+<div id="stamp-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="affordability" class="tool-panel">
-            <h2>Affordability Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="affordability" class="tool-panel">
+<h2>Affordability Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Applicant 1 Income (£/yr):</label>
+<input type="number" id="aff-income1" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Applicant 2 Income (£/yr):</label>
+<input type="number" id="aff-income2" placeholder="e.g. 40000" value="0">
+</div>
+<div class="input-group">
+<label>Deposit (£):</label>
+<input type="number" id="aff-deposit" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Monthly Debt Payments (£):</label>
+<input type="number" id="aff-debt" placeholder="e.g. 200" value="0">
+</div>
+<div class="input-group">
+<label>Interest Rate (%):</label>
+<input type="number" id="aff-rate" placeholder="e.g. 5.5" value="5.5" step="0.01">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateAffordability()">Calculate</button>
+</div>
+<div id="aff-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="uk-self-employed" class="tool-panel">
-            <h2>UK Self-Employed Tax Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="uk-self-employed" class="tool-panel">
+<h2>UK Self-Employed Tax Calculator</h2>
+<div class="tool-container">
+<div class="tax-year-selector">
+<label>Tax Year:</label>
+<select id="self-employed-tax-year">
+<option value="2024">2024/25</option>
+<option value="2023">2023/24</option>
+</select>
+</div>
+<div class="input-grid">
+<div class="input-group">
+<label>Annual Profit (£):</label>
+<input type="number" id="self-employed-profit" placeholder="e.g. 50000" value="50000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateUKSelfEmployed()">Calculate</button>
+</div>
+<div id="self-employed-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="uk-dividend" class="tool-panel">
-            <h2>UK Dividend Tax Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="uk-dividend" class="tool-panel">
+<h2>UK Dividend Tax Calculator</h2>
+<div class="tool-container">
+<div class="tax-year-selector">
+<label>Tax Year:</label>
+<select id="dividend-tax-year">
+<option value="2024">2024/25</option>
+<option value="2023">2023/24</option>
+</select>
+</div>
+<div class="input-grid">
+<div class="input-group">
+<label>Dividend Income (£):</label>
+<input type="number" id="dividend-amount" placeholder="e.g. 10000" value="10000">
+</div>
+<div class="input-group">
+<label>Other Income (£):</label>
+<input type="number" id="dividend-other-income" placeholder="e.g. 40000" value="40000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateUKDividend()">Calculate</button>
+</div>
+<div id="dividend-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="uk-capital-gains" class="tool-panel">
-            <h2>UK Capital Gains Tax Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="uk-capital-gains" class="tool-panel">
+<h2>UK Capital Gains Tax Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Capital Gain (£):</label>
+<input type="number" id="cg-gain" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Asset Type:</label>
+<select id="cg-asset-type">
+<option value="other">Shares/Other Assets</option>
+<option value="residential">Residential Property</option>
+</select>
+</div>
+<div class="input-group">
+<label>Taxable Income (£):</label>
+<input type="number" id="cg-income" placeholder="Your other income" value="50000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateUKCapitalGains()">Calculate</button>
+</div>
+<div id="cg-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="ir35" class="tool-panel">
-            <h2>IR35 Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="ir35" class="tool-panel">
+<h2>IR35 Calculator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">IR35 status determination requires detailed contract review.</p>
+</div>
+</div>
+</div>
 
-        <div id="uk-vat" class="tool-panel">
-            <h2>VAT Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="uk-vat" class="tool-panel">
+<h2>VAT Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Amount (£):</label>
+<input type="number" id="vat-amount" placeholder="e.g. 100" value="100">
+</div>
+<div class="input-group">
+<label>VAT Rate (%):</label>
+<select id="vat-rate">
+<option value="20" selected>20% (Standard)</option>
+<option value="5">5% (Reduced)</option>
+<option value="0">0% (Zero Rate)</option>
+</select>
+</div>
+<div class="input-group">
+<label>Operation:</label>
+<select id="vat-operation">
+<option value="add">Add VAT to amount</option>
+<option value="remove">Remove VAT from amount</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateVAT()">Calculate</button>
+</div>
+<div id="vat-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="us-income-tax" class="tool-panel">
-            <h2>US Income Tax Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="us-income-tax" class="tool-panel">
+<h2>US Income Tax Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Gross Income ($):</label>
+<input type="number" id="us-gross-income" placeholder="e.g. 75000" value="75000">
+</div>
+<div class="input-group">
+<label>Filing Status:</label>
+<select id="us-filing-status">
+<option value="single" selected>Single</option>
+<option value="married">Married Filing Jointly</option>
+</select>
+</div>
+<div class="input-group">
+<label>State:</label>
+<select id="us-state">
+<option value="CA">California</option>
+<option value="TX">Texas</option>
+<option value="NY">New York</option>
+<option value="FL">Florida</option>
+<option value="WA">Washington</option>
+<option value="AZ">Arizona</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateUSTax()">Calculate</button>
+</div>
+<div id="us-tax-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="us-self-employed" class="tool-panel">
-            <h2>US Self-Employment Tax Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="us-self-employed" class="tool-panel">
+<h2>US Self-Employment Tax Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Annual Profit ($):</label>
+<input type="number" id="us-se-profit" placeholder="e.g. 75000" value="75000">
+</div>
+<div class="input-group">
+<label>Filing Status:</label>
+<select id="us-se-filing">
+<option value="single" selected>Single</option>
+<option value="married">Married Filing Jointly</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateUSSelfEmployed()">Calculate</button>
+</div>
+<div id="us-se-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="us-capital-gains" class="tool-panel">
-            <h2>US Capital Gains Tax Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="us-capital-gains" class="tool-panel">
+<h2>US Capital Gains Tax Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Capital Gain ($):</label>
+<input type="number" id="us-cg-gain" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Other Income ($):</label>
+<input type="number" id="us-cg-income" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Filing Status:</label>
+<select id="us-cg-filing">
+<option value="single" selected>Single</option>
+<option value="married">Married Filing Jointly</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateUSCapitalGains()">Calculate</button>
+</div>
+<div id="us-cg-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="us-state-compare" class="tool-panel">
-            <h2>US State Tax Comparison</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="us-state-compare" class="tool-panel">
+<h2>US State Tax Comparison</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Annual Income ($):</label>
+<input type="number" id="state-income" placeholder="e.g. 100000" value="100000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateStateComparison()">Compare States</button>
+</div>
+<div id="state-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="fire-calculator" class="tool-panel">
-            <h2>FIRE Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="fire-calculator" class="tool-panel">
+<h2>FIRE Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Current Savings (£):</label>
+<input type="number" id="fire-savings" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Monthly Contribution (£):</label>
+<input type="number" id="fire-monthly" placeholder="e.g. 1000" value="1000">
+</div>
+<div class="input-group">
+<label>Expected Return (%/yr):</label>
+<input type="number" id="fire-return" placeholder="e.g. 7" value="7" step="0.1">
+</div>
+<div class="input-group">
+<label>Withdrawal Rate (%):</label>
+<input type="number" id="fire-withdrawal" placeholder="e.g. 4" value="4" step="0.1">
+</div>
+<div class="input-group">
+<label>Desired Annual Expenses (£):</label>
+<input type="number" id="fire-expenses" placeholder="e.g. 30000" value="30000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateFIRE()">Calculate</button>
+</div>
+<div id="fire-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="investment-fees" class="tool-panel">
-            <h2>Investment Fee Analyzer</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="investment-fees" class="tool-panel">
+<h2>Investment Fee Analyzer</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Investment Amount (£):</label>
+<input type="number" id="fee-principal" placeholder="e.g. 100000" value="100000">
+</div>
+<div class="input-group">
+<label>Investment Period (years):</label>
+<input type="number" id="fee-years" placeholder="e.g. 30" value="30">
+</div>
+<div class="input-group">
+<label>Expected Return (%/yr):</label>
+<input type="number" id="fee-return" placeholder="e.g. 7" value="7" step="0.1">
+</div>
+<div class="input-group">
+<label>Portfolio 1 Fee (%):</label>
+<input type="number" id="fee-1" placeholder="e.g. 0.5" value="0.5" step="0.01">
+</div>
+<div class="input-group">
+<label>Portfolio 2 Fee (%):</label>
+<input type="number" id="fee-2" placeholder="e.g. 1.5" value="1.5" step="0.01">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateInvestmentFees()">Compare Fees</button>
+</div>
+<div id="fee-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="dividend-reinvestment" class="tool-panel">
-            <h2>Dividend Reinvestment (DRIP)</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="dividend-reinvestment" class="tool-panel">
+<h2>Dividend Reinvestment (DRIP)</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Initial Investment (£):</label>
+<input type="number" id="drip-initial" placeholder="e.g. 10000" value="10000">
+</div>
+<div class="input-group">
+<label>Monthly Contribution (£):</label>
+<input type="number" id="drip-monthly" placeholder="e.g. 500" value="500">
+</div>
+<div class="input-group">
+<label>Years:</label>
+<input type="number" id="drip-years" placeholder="e.g. 10" value="10">
+</div>
+<div class="input-group">
+<label>Dividend Yield (%):</label>
+<input type="number" id="drip-yield" placeholder="e.g. 4" value="4" step="0.1">
+</div>
+<div class="input-group">
+<label>Share Price (£):</label>
+<input type="number" id="drip-price" placeholder="e.g. 50" value="50">
+</div>
+<div class="input-group">
+<label>Share Price Growth (%/yr):</label>
+<input type="number" id="drip-growth" placeholder="e.g. 3" value="3" step="0.1">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateDRIP()">Calculate</button>
+</div>
+<div id="drip-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="roi-calculator" class="tool-panel">
-            <h2>ROI Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="roi-calculator" class="tool-panel">
+<h2>ROI Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Initial Investment (£):</label>
+<input type="number" id="roi-initial" placeholder="e.g. 10000" value="10000">
+</div>
+<div class="input-group">
+<label>Final Value (£):</label>
+<input type="number" id="roi-final" placeholder="e.g. 15000" value="15000">
+</div>
+<div class="input-group">
+<label>Investment Period (years):</label>
+<input type="number" id="roi-years" placeholder="e.g. 5" value="5" step="0.5">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateROI()">Calculate</button>
+</div>
+<div id="roi-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="hourly-salary" class="tool-panel">
-            <h2>Hourly ↔ Salary Converter</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="hourly-salary" class="tool-panel">
+<h2>Hourly ↔ Salary Converter</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Annual Salary (£):</label>
+<input type="number" id="salary-annual" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Hours per Week:</label>
+<input type="number" id="salary-hours" placeholder="e.g. 40" value="40">
+</div>
+<div class="input-group">
+<label>Days per Week:</label>
+<input type="number" id="salary-days" placeholder="e.g. 5" value="5">
+</div>
+</div>
+<div class="button-group">
+<button onclick="convertSalary()">Convert</button>
+</div>
+<div class="results-panel">
+<div class="results-grid">
+<div class="result-item">
+<div class="label">Monthly</div>
+<div class="value" id="salary-monthly">£4,166.67</div>
+</div>
+<div class="result-item">
+<div class="label">Weekly</div>
+<div class="value" id="salary-weekly">£961.54</div>
+</div>
+<div class="result-item">
+<div class="label">Daily</div>
+<div class="value" id="salary-daily">£192.31</div>
+</div>
+<div class="result-item">
+<div class="label">Hourly</div>
+<div class="value" id="salary-hourly">£24.04</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-        <div id="remote-salary" class="tool-panel">
-            <h2>Remote Salary Adjuster</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="remote-salary" class="tool-panel">
+<h2>Remote Salary Adjuster</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Compare cost-of-living adjusted salaries for remote work.</p>
+</div>
+</div>
+</div>
 
-        <div id="paycheck" class="tool-panel">
-            <h2>Paycheck Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="paycheck" class="tool-panel">
+<h2>Paycheck Calculator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Detailed paycheck breakdown with all deductions.</p>
+</div>
+</div>
+</div>
 
-        <div id="contractor-rate" class="tool-panel">
-            <h2>Contractor Rate Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="contractor-rate" class="tool-panel">
+<h2>Contractor Rate Calculator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Compare contractor day rates to equivalent permanent salaries.</p>
+</div>
+</div>
+</div>
 
-        <div id="debt-payoff" class="tool-panel">
-            <h2>Debt Payoff Strategy</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="debt-payoff" class="tool-panel">
+<h2>Debt Payoff Strategy</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Avalanche vs snowball debt payoff comparison.</p>
+</div>
+</div>
+</div>
 
-        <div id="dti-calculator" class="tool-panel">
-            <h2>Debt-to-Income Ratio</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="dti-calculator" class="tool-panel">
+<h2>Debt-to-Income Ratio</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Calculate your DTI ratio for mortgage applications.</p>
+</div>
+</div>
+</div>
 
-        <div id="bnpl" class="tool-panel">
-            <h2>BNPL Comparison</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="bnpl" class="tool-panel">
+<h2>BNPL Comparison</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Compare Buy Now Pay Later options and costs.</p>
+</div>
+</div>
+</div>
 
-        <div id="apr-calculator" class="tool-panel">
-            <h2>APR Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="apr-calculator" class="tool-panel">
+<h2>APR Calculator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Convert between APR and interest rate with fees.</p>
+</div>
+</div>
+</div>
 
-        <div id="personal-inflation" class="tool-panel">
-            <h2>Personal Inflation Rate</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="personal-inflation" class="tool-panel">
+<h2>Personal Inflation Rate</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Calculate your personal inflation rate based on spending.</p>
+</div>
+</div>
+</div>
 
-        <div id="purchasing-power" class="tool-panel">
-            <h2>Purchasing Power Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="purchasing-power" class="tool-panel">
+<h2>Purchasing Power Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Amount (£):</label>
+<input type="number" id="inflation-amount" placeholder="e.g. 1000" value="1000">
+</div>
+<div class="input-group">
+<label>From Year:</label>
+<input type="number" id="inflation-from-year" placeholder="e.g. 2010" value="2010">
+</div>
+<div class="input-group">
+<label>To Year:</label>
+<input type="number" id="inflation-to-year" placeholder="e.g. 2024" value="2024">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateInflation()">Calculate</button>
+</div>
+<div id="inflation-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="retirement-calculator" class="tool-panel">
-            <h2>Retirement Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="retirement-calculator" class="tool-panel">
+<h2>Retirement Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Current Age:</label>
+<input type="number" id="ret-age" placeholder="e.g. 30" value="30">
+</div>
+<div class="input-group">
+<label>Retirement Age:</label>
+<input type="number" id="ret-retire-age" placeholder="e.g. 65" value="65">
+</div>
+<div class="input-group">
+<label>Current Savings (£):</label>
+<input type="number" id="ret-savings" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Monthly Contribution (£):</label>
+<input type="number" id="ret-monthly" placeholder="e.g. 500" value="500">
+</div>
+<div class="input-group">
+<label>Expected Return (%/yr):</label>
+<input type="number" id="ret-return" placeholder="e.g. 7" value="7" step="0.1">
+</div>
+<div class="input-group">
+<label>Desired Annual Income (£):</label>
+<input type="number" id="ret-income" placeholder="e.g. 25000" value="25000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateRetirement()">Calculate</button>
+</div>
+<div id="ret-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="pension-calculator" class="tool-panel">
-            <h2>Pension Calculator (UK)</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="pension-calculator" class="tool-panel">
+<h2>Pension Calculator (UK)</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">UK pension annual allowance and lifetime allowance calculator.</p>
+</div>
+</div>
+</div>
 
-        <div id="401k-calculator" class="tool-panel">
-            <h2>401k Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="401k-calculator" class="tool-panel">
+<h2>401k Calculator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">US 401k contribution and employer match calculator.</p>
+</div>
+</div>
+</div>
 
-        <div id="social-security" class="tool-panel">
-            <h2>Social Security Estimator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="social-security" class="tool-panel">
+<h2>Social Security Estimator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Estimate your Social Security benefits at different ages.</p>
+</div>
+</div>
+</div>
 
-        <div id="break-even" class="tool-panel">
-            <h2>Break-Even Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="break-even" class="tool-panel">
+<h2>Break-Even Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Fixed Costs (£):</label>
+<input type="number" id="be-fixed" placeholder="e.g. 10000" value="10000">
+</div>
+<div class="input-group">
+<label>Variable Cost per Unit (£):</label>
+<input type="number" id="be-variable" placeholder="e.g. 5" value="5">
+</div>
+<div class="input-group">
+<label>Price per Unit (£):</label>
+<input type="number" id="be-price" placeholder="e.g. 15" value="15">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateBreakEven()">Calculate</button>
+</div>
+<div id="be-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="profit-margin" class="tool-panel">
-            <h2>Profit Margin Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="profit-margin" class="tool-panel">
+<h2>Profit Margin Calculator</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Revenue (£):</label>
+<input type="number" id="pm-revenue" placeholder="e.g. 100000" value="100000">
+</div>
+<div class="input-group">
+<label>Cost (£):</label>
+<input type="number" id="pm-cost" placeholder="e.g. 60000" value="60000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateProfitMargin()">Calculate</button>
+</div>
+<div id="pm-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="cash-flow" class="tool-panel">
-            <h2>Cash Flow Projector</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="cash-flow" class="tool-panel">
+<h2>Cash Flow Projector</h2>
+<div class="tool-container">
+<div class="input-grid">
+<div class="input-group">
+<label>Starting Balance (£):</label>
+<input type="number" id="cf-balance" placeholder="e.g. 5000" value="5000">
+</div>
+<div class="input-group">
+<label>Monthly Income (£):</label>
+<input type="number" id="cf-income" placeholder="e.g. 4000" value="4000">
+</div>
+<div class="input-group">
+<label>Monthly Expenses (£):</label>
+<input type="number" id="cf-expenses" placeholder="e.g. 3500" value="3500">
+</div>
+<div class="input-group">
+<label>Months to Project:</label>
+<input type="number" id="cf-months" placeholder="e.g. 12" value="12">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateCashFlow()">Calculate</button>
+</div>
+<div id="cf-results" class="results-panel"></div>
+</div>
+</div>
 
-        <div id="invoice-calculator" class="tool-panel">
-            <h2>Invoice Calculator</h2>
-            <div class="tool-container">
-                <div class="coming-soon">
-                    <span class="icon">🚧</span>
-                    <p>This calculator is coming soon!</p>
-                </div>
-            </div>
-        </div>
+<div id="invoice-calculator" class="tool-panel">
+<h2>Invoice Calculator</h2>
+<div class="tool-container">
+<div class="coming-soon">
+<span class="icon">🚧</span>
+<p>This calculator is coming soon!</p>
+<p class="subtitle">Create and calculate invoice totals with VAT.</p>
+</div>
+</div>
+</div>
     </main>
 
     <footer class="site-footer">

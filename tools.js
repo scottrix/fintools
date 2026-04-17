@@ -577,3 +577,1003 @@ function calculateInflation() {
         </p>
     `;
 }
+
+// ==========================================
+// CRYPTO CONVERTER
+// ==========================================
+
+const cryptoRates = {
+    BTC: { USD: 67000, EUR: 61640, GBP: 52930, ETH: 22.5 },
+    ETH: { USD: 3400, EUR: 3128, GBP: 2686, BTC: 0.044 },
+    XRP: { USD: 0.52, EUR: 0.48, GBP: 0.41, BTC: 0.0000078 },
+    ADA: { USD: 0.45, EUR: 0.41, GBP: 0.36, BTC: 0.0000067 },
+    SOL: { USD: 145, EUR: 133, GBP: 115, BTC: 0.0022 },
+    DOGE: { USD: 0.12, EUR: 0.11, GBP: 0.095, BTC: 0.0000018 },
+    DOT: { USD: 7.20, EUR: 6.62, GBP: 5.69, BTC: 0.00011 },
+    MATIC: { USD: 0.58, EUR: 0.53, GBP: 0.46, BTC: 0.0000087 },
+    LINK: { USD: 14.50, EUR: 13.34, GBP: 11.46, BTC: 0.00022 },
+    AVAX: { USD: 36, EUR: 33.12, GBP: 28.44, BTC: 0.00054 }
+};
+
+function calculateCrypto() {
+    const amount = parseFloat(document.getElementById('crypto-amount').value) || 0;
+    const from = document.getElementById('crypto-from').value;
+    const to = document.getElementById('crypto-to').value;
+    
+    let result;
+    if (from === to) {
+        result = amount;
+    } else if (cryptoRates[from] && cryptoRates[from][to]) {
+        result = amount * cryptoRates[from][to];
+    } else if (cryptoRates[to] && cryptoRates[to][from]) {
+        result = amount / cryptoRates[to][from];
+    } else {
+        result = 0;
+    }
+    
+    document.getElementById('crypto-result').value = result.toFixed(8);
+}
+
+// ==========================================
+// STAMP DUTY (UK)
+// ==========================================
+
+function calculateStampDuty() {
+    const price = parseFloat(document.getElementById('stamp-price').value) || 0;
+    const buyerType = document.getElementById('stamp-buyer-type').value;
+    
+    let tax = 0;
+    let bands = [];
+    
+    if (buyerType === 'first') {
+        // First-time buyer relief
+        if (price <= 425000) {
+            tax = 0;
+            bands = [{ threshold: 425000, rate: 0, amount: 0 }];
+        } else if (price <= 625000) {
+            bands = [
+                { threshold: 425000, rate: 0, amount: 0 },
+                { threshold: 200000, rate: 0.05, amount: (price - 425000) * 0.05 }
+            ];
+            tax = (price - 425000) * 0.05;
+        } else {
+            bands = [
+                { threshold: 425000, rate: 0, amount: 0 },
+                { threshold: 200000, rate: 0.05, amount: 10000 },
+                { threshold: 999999999, rate: 0.10, amount: (price - 625000) * 0.10 }
+            ];
+            tax = 10000 + (price - 625000) * 0.10;
+        }
+    } else if (buyerType === 'additional') {
+        // Additional property (3% surcharge)
+        bands = [
+            { threshold: 125000, rate: 0.03, amount: Math.min(price, 125000) * 0.03 },
+            { threshold: 125000, rate: 0.05, amount: Math.max(0, Math.min(price - 125000, 125000)) * 0.05 },
+            { threshold: 675000, rate: 0.08, amount: Math.max(0, Math.min(price - 250000, 675000)) * 0.08 },
+            { threshold: 575000, rate: 0.13, amount: Math.max(0, Math.min(price - 925000, 575000)) * 0.13 },
+            { threshold: 999999999, rate: 0.15, amount: Math.max(0, price - 1500000) * 0.15 }
+        ];
+        tax = Math.min(price, 125000) * 0.03;
+        tax += Math.max(0, Math.min(price - 125000, 125000)) * 0.05;
+        tax += Math.max(0, Math.min(price - 250000, 675000)) * 0.08;
+        tax += Math.max(0, Math.min(price - 925000, 575000)) * 0.13;
+        tax += Math.max(0, price - 1500000) * 0.15;
+    } else {
+        // Standard rates
+        tax = 0;
+        if (price > 125000) tax += Math.min(price - 125000, 125000) * 0.02;
+        if (price > 250000) tax += Math.min(price - 250000, 675000) * 0.05;
+        if (price > 925000) tax += Math.min(price - 925000, 575000) * 0.10;
+        if (price > 1500000) tax += (price - 1500000) * 0.12;
+    }
+    
+    document.getElementById('stamp-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Stamp Duty</div>
+                <div class="value">£${formatCurrency(tax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Property Price</div>
+                <div class="value">£${formatCurrency(price)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Effective Rate</div>
+                <div class="value">${((tax / price) * 100).toFixed(2)}%</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// RENT VS BUY
+// ==========================================
+
+function calculateRentVsBuy() {
+    const rentMonthly = parseFloat(document.getElementById('rent-monthly').value) || 0;
+    const propertyPrice = parseFloat(document.getElementById('rent-property-price').value) || 0;
+    const deposit = parseFloat(document.getElementById('rent-deposit').value) || 0;
+    const mortgageRate = parseFloat(document.getElementById('rent-mortgage-rate').value) || 0;
+    const years = parseInt(document.getElementById('rent-years').value) || 0;
+    const housePriceGrowth = parseFloat(document.getElementById('rent-house-growth').value) || 0;
+    const rentGrowth = parseFloat(document.getElementById('rent-growth').value) || 0;
+    const investmentReturn = parseFloat(document.getElementById('rent-investment-return').value) || 0;
+    
+    const loan = propertyPrice - deposit;
+    const monthlyRate = mortgageRate / 100 / 12;
+    const numPayments = years * 12;
+    
+    let monthlyMortgage;
+    if (monthlyRate === 0) {
+        monthlyMortgage = loan / numPayments;
+    } else {
+        monthlyMortgage = loan * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / (Math.pow(1 + monthlyRate, numPayments) - 1);
+    }
+    
+    const totalMortgagePayments = monthlyMortgage * numPayments;
+    const propertyValueEnd = propertyPrice * Math.pow(1 + housePriceGrowth / 100, years);
+    const equityEnd = propertyValueEnd - loan;
+    
+    // Rent scenario
+    let totalRent = 0;
+    let currentRent = rentMonthly;
+    for (let year = 0; year < years; year++) {
+        totalRent += currentRent * 12;
+        currentRent *= (1 + rentGrowth / 100);
+    }
+    
+    // Investment scenario (if renting)
+    const depositInvested = deposit * Math.pow(1 + investmentReturn / 100, years);
+    const monthlySavings = monthlyMortgage - rentMonthly;
+    let investedSavings = 0;
+    if (monthlySavings > 0) {
+        investedSavings = monthlySavings * 12 * ((Math.pow(1 + investmentReturn / 100, years) - 1) / (investmentReturn / 100));
+    }
+    
+    const buyNetWorth = propertyValueEnd - loan - totalMortgagePayments + deposit;
+    const rentNetWorth = depositInvested + investedSavings - totalRent;
+    
+    document.getElementById('rent-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight" style="background: ${buyNetWorth > rentNetWorth ? 'linear-gradient(135deg, #27ae60, #1e8449)' : 'var(--bg-card)'}">
+                <div class="label">Buying Net Worth</div>
+                <div class="value">£${formatCurrency(buyNetWorth)}</div>
+            </div>
+            <div class="result-item result-highlight" style="background: ${rentNetWorth > buyNetWorth ? 'linear-gradient(135deg, #27ae60, #1e8449)' : 'var(--bg-card)'}">
+                <div class="label">Renting Net Worth</div>
+                <div class="value">£${formatCurrency(rentNetWorth)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Monthly Mortgage</div>
+                <div class="value">£${formatCurrency(monthlyMortgage)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Total Rent Paid</div>
+                <div class="value">£${formatCurrency(totalRent)}</div>
+            </div>
+        </div>
+        <p style="margin-top: 20px; color: var(--text-secondary); font-size: 14px; text-align: center;">
+            ${buyNetWorth > rentNetWorth ? 
+                `Buying is better by £${formatCurrency(buyNetWorth - rentNetWorth)} over ${years} years.` :
+                `Renting is better by £${formatCurrency(rentNetWorth - buyNetWorth)} over ${years} years.`
+            }
+        </p>
+    `;
+}
+
+// ==========================================
+// AFFORDABILITY CALCULATOR
+// ==========================================
+
+function calculateAffordability() {
+    const income1 = parseFloat(document.getElementById('aff-income1').value) || 0;
+    const income2 = parseFloat(document.getElementById('aff-income2').value) || 0;
+    const deposit = parseFloat(document.getElementById('aff-deposit').value) || 0;
+    const monthlyDebt = parseFloat(document.getElementById('aff-debt').value) || 0;
+    const interestRate = parseFloat(document.getElementById('aff-rate').value) || 5;
+    
+    const totalIncome = income1 + income2;
+    const annualIncome = totalIncome;
+    
+    // Standard lending multiple (4.5x income, adjusted for debt)
+    const maxBorrowing = Math.min(totalIncome * 4.5, totalIncome * 5 - (monthlyDebt * 12 * 5));
+    const maxProperty = maxBorrowing + deposit;
+    
+    const monthlyRate = interestRate / 100 / 12;
+    const monthlyPayment = maxBorrowing * (monthlyRate * Math.pow(1 + monthlyRate, 300)) / (Math.pow(1 + monthlyRate, 300) - 1);
+    
+    document.getElementById('aff-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Max Property Price</div>
+                <div class="value">£${formatCurrency(maxProperty)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Max Borrowing</div>
+                <div class="value">£${formatCurrency(maxBorrowing)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Est. Monthly Payment</div>
+                <div class="value">£${formatCurrency(monthlyPayment)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">LTV Ratio</div>
+                <div class="value">${((maxBorrowing / maxProperty) * 100).toFixed(1)}%</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// UK SELF-EMPLOYED TAX
+// ==========================================
+
+function calculateUKSelfEmployed() {
+    const profit = parseFloat(document.getElementById('self-employed-profit').value) || 0;
+    const taxYear = document.getElementById('self-employed-tax-year').value;
+    
+    const bands = ukTaxBands[taxYear] || ukTaxBands['2024'];
+    
+    // Class 2 NI (if applicable - £3.45/week for 2024/25)
+    const class2NI = profit >= 12570 ? 179.40 : 0;
+    
+    // Class 4 NI
+    let class4NI = 0;
+    if (profit > bands.niPrimaryThreshold) {
+        class4NI += Math.min(profit - bands.niPrimaryThreshold, bands.niUpperThreshold - bands.niPrimaryThreshold) * bands.niLowerRate;
+        if (profit > bands.niUpperThreshold) {
+            class4NI += (profit - bands.niUpperThreshold) * bands.niUpperRate;
+        }
+    }
+    
+    // Income tax (same as employed)
+    let incomeTax = 0;
+    let taxable = profit;
+    const taxFree = Math.min(taxable, bands.personalAllowance);
+    taxable -= taxFree;
+    
+    const basicBand = bands.basicLimit - bands.personalAllowance;
+    const basicAmount = Math.min(taxable, basicBand);
+    incomeTax += basicAmount * bands.basicRate;
+    taxable -= basicAmount;
+    
+    const higherAmount = Math.min(taxable, bands.additionalLimit - bands.basicLimit);
+    incomeTax += higherAmount * bands.higherRate;
+    taxable -= higherAmount;
+    
+    incomeTax += Math.max(0, taxable) * bands.additionalRate;
+    
+    const totalTax = incomeTax + class2NI + class4NI;
+    const netProfit = profit - totalTax;
+    
+    document.getElementById('self-employed-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Net Profit</div>
+                <div class="value">£${formatCurrency(netProfit)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Income Tax</div>
+                <div class="value">£${formatCurrency(incomeTax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Class 4 NI</div>
+                <div class="value">£${formatCurrency(class4NI)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Class 2 NI</div>
+                <div class="value">£${formatCurrency(class2NI)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// UK DIVIDEND TAX
+// ==========================================
+
+function calculateUKDividend() {
+    const dividends = parseFloat(document.getElementById('dividend-amount').value) || 0;
+    const otherIncome = parseFloat(document.getElementById('dividend-other-income').value) || 0;
+    const taxYear = document.getElementById('dividend-tax-year').value;
+    
+    const bands = ukTaxBands[taxYear] || ukTaxBands['2024'];
+    
+    const dividendAllowance = 500; // £500 for 2024/25
+    const basicRate = 0.0875;
+    const higherRate = 0.3375;
+    const additionalRate = 0.3935;
+    
+    // Calculate how much of other income uses the tax bands
+    let otherTaxable = otherIncome;
+    const personalAllowanceRemaining = Math.max(0, bands.personalAllowance - otherTaxable);
+    otherTaxable -= (bands.personalAllowance - personalAllowanceRemaining);
+    
+    const basicRemaining = Math.max(0, bands.basicLimit - bands.personalAllowance - Math.max(0, otherTaxable));
+    
+    let dividendTax = 0;
+    let dividendTaxable = dividends;
+    
+    // Dividend allowance
+    const taxFree = Math.min(dividendTaxable, dividendAllowance);
+    dividendTaxable -= taxFree;
+    
+    // Basic rate
+    const basicDividend = Math.min(dividendTaxable, basicRemaining);
+    dividendTax += basicDividend * basicRate;
+    dividendTaxable -= basicDividend;
+    
+    // Higher/additional rate
+    const higherDividend = Math.min(dividendTaxable, bands.additionalLimit - bands.basicLimit);
+    dividendTax += higherDividend * higherRate;
+    dividendTaxable -= higherDividend;
+    
+    dividendTax += Math.max(0, dividendTaxable) * additionalRate;
+    
+    document.getElementById('dividend-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Dividend Tax</div>
+                <div class="value">£${formatCurrency(dividendTax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Gross Dividends</div>
+                <div class="value">£${formatCurrency(dividends)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Tax-Free Allowance</div>
+                <div class="value">£${formatCurrency(Math.min(dividends, dividendAllowance))}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Taxable Dividends</div>
+                <div class="value">£${formatCurrency(Math.max(0, dividends - dividendAllowance))}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// UK CAPITAL GAINS TAX
+// ==========================================
+
+function calculateUKCapitalGains() {
+    const gain = parseFloat(document.getElementById('cg-gain').value) || 0;
+    const assetType = document.getElementById('cg-asset-type').value;
+    const income = parseFloat(document.getElementById('cg-income').value) || 0;
+    
+    const annualExempt = 3000; // £3,000 for 2024/25
+    const residentialRate = income > 50270 ? 0.24 : 0.18;
+    const otherRate = income > 50270 ? 0.20 : 0.10;
+    
+    const taxableGain = Math.max(0, gain - annualExempt);
+    const rate = assetType === 'residential' ? residentialRate : otherRate;
+    const tax = taxableGain * rate;
+    
+    document.getElementById('cg-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Capital Gains Tax</div>
+                <div class="value">£${formatCurrency(tax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Total Gain</div>
+                <div class="value">£${formatCurrency(gain)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Annual Exempt</div>
+                <div class="value">£${formatCurrency(Math.min(gain, annualExempt))}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Tax Rate</div>
+                <div class="value">${(rate * 100).toFixed(1)}%</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// VAT CALCULATOR
+// ==========================================
+
+function calculateVAT() {
+    const amount = parseFloat(document.getElementById('vat-amount').value) || 0;
+    const rate = parseFloat(document.getElementById('vat-rate').value) || 20;
+    const operation = document.getElementById('vat-operation').value;
+    
+    let net, vat, gross;
+    
+    if (operation === 'add') {
+        net = amount;
+        vat = amount * (rate / 100);
+        gross = amount + vat;
+    } else {
+        gross = amount;
+        net = amount / (1 + rate / 100);
+        vat = gross - net;
+    }
+    
+    document.getElementById('vat-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Gross Amount</div>
+                <div class="value">£${formatCurrency(gross)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Net Amount</div>
+                <div class="value">£${formatCurrency(net)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">VAT (${rate}%)</div>
+                <div class="value">£${formatCurrency(vat)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// US INCOME TAX
+// ==========================================
+
+const usTaxBrackets2024 = {
+    single: [
+        { min: 0, max: 11600, rate: 0.10 },
+        { min: 11600, max: 47150, rate: 0.12 },
+        { min: 47150, max: 100525, rate: 0.22 },
+        { min: 100525, max: 191950, rate: 0.24 },
+        { min: 191950, max: 243725, rate: 0.32 },
+        { min: 243725, max: 609350, rate: 0.35 },
+        { min: 609350, max: Infinity, rate: 0.37 }
+    ],
+    married: [
+        { min: 0, max: 23200, rate: 0.10 },
+        { min: 23200, max: 94300, rate: 0.12 },
+        { min: 94300, max: 201050, rate: 0.22 },
+        { min: 201050, max: 383900, rate: 0.24 },
+        { min: 383900, max: 487450, rate: 0.32 },
+        { min: 487450, max: 731200, rate: 0.35 },
+        { min: 731200, max: Infinity, rate: 0.37 }
+    ]
+};
+
+function calculateUSTax() {
+    const grossIncome = parseFloat(document.getElementById('us-gross-income').value) || 0;
+    const filingStatus = document.getElementById('us-filing-status').value;
+    const state = document.getElementById('us-state').value;
+    
+    const brackets = usTaxBrackets2024[filingStatus];
+    
+    let federalTax = 0;
+    let remaining = grossIncome;
+    
+    for (const bracket of brackets) {
+        if (remaining <= 0) break;
+        const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
+        federalTax += taxableInBracket * bracket.rate;
+        remaining -= taxableInBracket;
+    }
+    
+    // Simplified state tax
+    const stateTaxRates = { CA: 0.093, TX: 0, NY: 0.085, FL: 0, WA: 0, AZ: 0.025 };
+    const stateTax = grossIncome * (stateTaxRates[state] || 0.05);
+    
+    // FICA
+    const socialSecurity = Math.min(grossIncome, 168600) * 0.062;
+    const medicare = grossIncome * 0.0145;
+    
+    const totalTax = federalTax + stateTax + socialSecurity + medicare;
+    const netIncome = grossIncome - totalTax;
+    
+    document.getElementById('us-tax-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Take Home (Annual)</div>
+                <div class="value">$${formatCurrency(netIncome)}</div>
+            </div>
+            <div class="result-item result-highlight">
+                <div class="label">Take Home (Monthly)</div>
+                <div class="value">$${formatCurrency(netIncome / 12)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Federal Tax</div>
+                <div class="value">$${formatCurrency(federalTax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">State Tax</div>
+                <div class="value">$${formatCurrency(stateTax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Social Security</div>
+                <div class="value">$${formatCurrency(socialSecurity)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Medicare</div>
+                <div class="value">$${formatCurrency(medicare)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// US SELF-EMPLOYMENT TAX
+// ==========================================
+
+function calculateUSSelfEmployed() {
+    const profit = parseFloat(document.getElementById('us-se-profit').value) || 0;
+    const filingStatus = document.getElementById('us-se-filing').value;
+    
+    // Self-employment tax (Social Security + Medicare, both halves)
+    const seTax = profit * 0.9235 * 0.153;
+    
+    // Deduct half of SE tax
+    const taxableIncome = profit - (seTax / 2);
+    
+    // Federal income tax
+    const brackets = usTaxBrackets2024[filingStatus];
+    let federalTax = 0;
+    let remaining = taxableIncome;
+    
+    for (const bracket of brackets) {
+        if (remaining <= 0) break;
+        const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
+        federalTax += taxableInBracket * bracket.rate;
+        remaining -= taxableInBracket;
+    }
+    
+    const totalTax = federalTax + seTax;
+    const netProfit = profit - totalTax;
+    
+    document.getElementById('us-se-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Net Profit</div>
+                <div class="value">$${formatCurrency(netProfit)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Income Tax</div>
+                <div class="value">$${formatCurrency(federalTax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">SE Tax</div>
+                <div class="value">$${formatCurrency(seTax)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// US CAPITAL GAINS TAX
+// ==========================================
+
+function calculateUSCapitalGains() {
+    const gain = parseFloat(document.getElementById('us-cg-gain').value) || 0;
+    const income = parseFloat(document.getElementById('us-cg-income').value) || 0;
+    const filingStatus = document.getElementById('us-cg-filing').value;
+    
+    const thresholds = filingStatus === 'married' 
+        ? [0, 94050, 583750, Infinity]
+        : [0, 47025, 518900, Infinity];
+    
+    const rates = [0, 0.15, 0.20];
+    
+    let tax = 0;
+    let remaining = gain;
+    
+    for (let i = 0; i < thresholds.length - 1; i++) {
+        if (remaining <= 0) break;
+        const bracketSpace = thresholds[i + 1] - (thresholds[i] + income);
+        if (bracketSpace > 0) {
+            const taxableInBracket = Math.min(remaining, bracketSpace);
+            tax += taxableInBracket * rates[i];
+            remaining -= taxableInBracket;
+        }
+    }
+    
+    document.getElementById('us-cg-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Capital Gains Tax</div>
+                <div class="value">$${formatCurrency(tax)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Total Gain</div>
+                <div class="value">$${formatCurrency(gain)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Effective Rate</div>
+                <div class="value">${((tax / gain) * 100).toFixed(2)}%</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// US STATE TAX COMPARISON
+// ==========================================
+
+const stateTaxData = [
+    { state: 'California', abbr: 'CA', rate: 0.093 },
+    { state: 'Texas', abbr: 'TX', rate: 0 },
+    { state: 'New York', abbr: 'NY', rate: 0.085 },
+    { state: 'Florida', abbr: 'FL', rate: 0 },
+    { state: 'Washington', abbr: 'WA', rate: 0 },
+    { state: 'Arizona', abbr: 'AZ', rate: 0.025 },
+    { state: 'Colorado', abbr: 'CO', rate: 0.044 },
+    { state: 'Illinois', abbr: 'IL', rate: 0.0495 },
+    { state: 'Pennsylvania', abbr: 'PA', rate: 0.0307 },
+    { state: 'Ohio', abbr: 'OH', rate: 0.0399 }
+];
+
+function calculateStateComparison() {
+    const income = parseFloat(document.getElementById('state-income').value) || 0;
+    
+    let html = '<div class="results-grid">';
+    
+    stateTaxData.forEach(s => {
+        const stateTax = income * s.rate;
+        html += `
+            <div class="result-item">
+                <div class="label">${s.state}</div>
+                <div class="value">$${formatCurrency(stateTax)}</div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    html += `<p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">State tax rates are approximate. Consult a tax professional for accurate estimates.</p>`;
+    
+    document.getElementById('state-results').innerHTML = html;
+}
+
+// ==========================================
+// FIRE CALCULATOR
+// ==========================================
+
+function calculateFIRE() {
+    const currentSavings = parseFloat(document.getElementById('fire-savings').value) || 0;
+    const monthlyContribution = parseFloat(document.getElementById('fire-monthly').value) || 0;
+    const annualReturn = parseFloat(document.getElementById('fire-return').value) || 7;
+    const withdrawalRate = parseFloat(document.getElementById('fire-withdrawal').value) || 4;
+    const annualExpenses = parseFloat(document.getElementById('fire-expenses').value) || 0;
+    
+    const fireNumber = annualExpenses / (withdrawalRate / 100);
+    const monthlyRate = annualReturn / 100 / 12;
+    
+    // Calculate years to FIRE
+    let years = 0;
+    let savings = currentSavings;
+    
+    if (monthlyRate > 0) {
+        const monthlyGrowth = Math.log(fireNumber / currentSavings + 1) / Math.log(1 + monthlyRate);
+        if (monthlyContribution > 0) {
+            while (savings < fireNumber && years < 100) {
+                savings = savings * (1 + monthlyRate) + monthlyContribution;
+                years += 1/12;
+            }
+        } else {
+            years = monthlyGrowth / 12;
+        }
+    } else {
+        if (monthlyContribution > 0) {
+            years = (fireNumber - currentSavings) / (monthlyContribution * 12);
+        }
+    }
+    
+    const projectedValue = currentSavings * Math.pow(1 + annualReturn/100, years) + 
+        monthlyContribution * 12 * ((Math.pow(1 + annualReturn/100, years) - 1) / (annualReturn/100));
+    
+    document.getElementById('fire-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">FIRE Number</div>
+                <div class="value">£${formatCurrency(fireNumber)}</div>
+            </div>
+            <div class="result-item result-highlight">
+                <div class="label">Years to FIRE</div>
+                <div class="value">${years.toFixed(1)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Current Savings</div>
+                <div class="value">£${formatCurrency(currentSavings)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Monthly Contribution</div>
+                <div class="value">£${formatCurrency(monthlyContribution)}</div>
+            </div>
+        </div>
+        <p style="margin-top: 20px; color: var(--text-secondary); font-size: 14px; text-align: center;">
+            You need £${formatCurrency(fireNumber)} to withdraw £${formatCurrency(annualExpenses)} annually at ${withdrawalRate}% withdrawal rate.
+        </p>
+    `;
+}
+
+// ==========================================
+// INVESTMENT FEE ANALYZER
+// ==========================================
+
+function calculateInvestmentFees() {
+    const principal = parseFloat(document.getElementById('fee-principal').value) || 0;
+    const years = parseInt(document.getElementById('fee-years').value) || 0;
+    const annualReturn = parseFloat(document.getElementById('fee-return').value) || 7;
+    const fee1 = parseFloat(document.getElementById('fee-1').value) || 0;
+    const fee2 = parseFloat(document.getElementById('fee-2').value) || 0;
+    
+    const value1 = principal * Math.pow(1 + (annualReturn - fee1) / 100, years);
+    const value2 = principal * Math.pow(1 + (annualReturn - fee2) / 100, years);
+    const difference = Math.abs(value1 - value2);
+    
+    document.getElementById('fee-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item">
+                <div class="label">Portfolio 1 (${fee1}% fee)</div>
+                <div class="value">£${formatCurrency(value1)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Portfolio 2 (${fee2}% fee)</div>
+                <div class="value">£${formatCurrency(value2)}</div>
+            </div>
+            <div class="result-item result-highlight">
+                <div class="label">Difference</div>
+                <div class="value">£${formatCurrency(difference)}</div>
+            </div>
+        </div>
+        <p style="margin-top: 20px; color: var(--text-secondary); font-size: 14px; text-align: center;">
+            A ${Math.abs(fee1 - fee2).toFixed(2)}% fee difference costs £${formatCurrency(difference)} over ${years} years.
+        </p>
+    `;
+}
+
+// ==========================================
+// DIVIDEND REINVESTMENT (DRIP)
+// ==========================================
+
+function calculateDRIP() {
+    const initialInvestment = parseFloat(document.getElementById('drip-initial').value) || 0;
+    const monthlyContribution = parseFloat(document.getElementById('drip-monthly').value) || 0;
+    const years = parseInt(document.getElementById('drip-years').value) || 0;
+    const dividendYield = parseFloat(document.getElementById('drip-yield').value) || 0;
+    const sharePrice = parseFloat(document.getElementById('drip-price').value) || 100;
+    const growthRate = parseFloat(document.getElementById('drip-growth').value) || 0;
+    
+    let shares = initialInvestment / sharePrice;
+    let totalInvested = initialInvestment;
+    const months = years * 12;
+    const monthlyDividend = dividendYield / 100 / 12;
+    
+    for (let i = 0; i < months; i++) {
+        // Add monthly contribution
+        shares += monthlyContribution / sharePrice;
+        totalInvested += monthlyContribution;
+        
+        // Reinvest dividends
+        const dividend = shares * sharePrice * monthlyDividend;
+        shares += dividend / sharePrice;
+        
+        // Share price growth
+        // (simplified - in reality would compound differently)
+    }
+    
+    const finalValue = shares * sharePrice * Math.pow(1 + growthRate/100, years);
+    const totalDividends = finalValue - totalInvested;
+    
+    document.getElementById('drip-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Final Value</div>
+                <div class="value">£${formatCurrency(finalValue)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Total Invested</div>
+                <div class="value">£${formatCurrency(totalInvested)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Dividends Earned</div>
+                <div class="value">£${formatCurrency(totalDividends)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Final Shares</div>
+                <div class="value">${shares.toFixed(4)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// ROI CALCULATOR
+// ==========================================
+
+function calculateROI() {
+    const initialInvestment = parseFloat(document.getElementById('roi-initial').value) || 0;
+    const finalValue = parseFloat(document.getElementById('roi-final').value) || 0;
+    const years = parseFloat(document.getElementById('roi-years').value) || 1;
+    
+    const totalReturn = finalValue - initialInvestment;
+    const roi = (totalReturn / initialInvestment) * 100;
+    const annualizedReturn = (Math.pow(finalValue / initialInvestment, 1 / years) - 1) * 100;
+    
+    document.getElementById('roi-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Total ROI</div>
+                <div class="value">${roi.toFixed(2)}%</div>
+            </div>
+            <div class="result-item result-highlight">
+                <div class="label">Annualized Return</div>
+                <div class="value">${annualizedReturn.toFixed(2)}%</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Total Gain</div>
+                <div class="value">£${formatCurrency(totalReturn)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Initial Investment</div>
+                <div class="value">£${formatCurrency(initialInvestment)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// RETIREMENT CALCULATOR
+// ==========================================
+
+function calculateRetirement() {
+    const currentAge = parseInt(document.getElementById('ret-age').value) || 30;
+    const retirementAge = parseInt(document.getElementById('ret-retire-age').value) || 65;
+    const currentSavings = parseFloat(document.getElementById('ret-savings').value) || 0;
+    const monthlyContribution = parseFloat(document.getElementById('ret-monthly').value) || 0;
+    const annualReturn = parseFloat(document.getElementById('ret-return').value) || 7;
+    const desiredIncome = parseFloat(document.getElementById('ret-income').value) || 0;
+    
+    const yearsToRetire = retirementAge - currentAge;
+    const months = yearsToRetire * 12;
+    const monthlyRate = annualReturn / 100 / 12;
+    
+    let futureValue = currentSavings * Math.pow(1 + monthlyRate, months);
+    if (monthlyRate > 0) {
+        futureValue += monthlyContribution * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+    } else {
+        futureValue += monthlyContribution * months;
+    }
+    
+    const safeWithdrawal = futureValue * 0.04;
+    const yearsOfIncome = futureValue / desiredIncome;
+    
+    document.getElementById('ret-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Projected Savings</div>
+                <div class="value">£${formatCurrency(futureValue)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Years to Retirement</div>
+                <div class="value">${yearsToRetire}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">4% Safe Withdrawal</div>
+                <div class="value">£${formatCurrency(safeWithdrawal)}/yr</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Years of Desired Income</div>
+                <div class="value">${yearsOfIncome.toFixed(1)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// BREAK-EVEN CALCULATOR
+// ==========================================
+
+function calculateBreakEven() {
+    const fixedCosts = parseFloat(document.getElementById('be-fixed').value) || 0;
+    const variableCost = parseFloat(document.getElementById('be-variable').value) || 0;
+    const price = parseFloat(document.getElementById('be-price').value) || 0;
+    
+    const contributionMargin = price - variableCost;
+    const breakEvenUnits = fixedCosts / contributionMargin;
+    const breakEvenRevenue = breakEvenUnits * price;
+    
+    document.getElementById('be-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Break-Even Units</div>
+                <div class="value">${Math.ceil(breakEvenUnits)}</div>
+            </div>
+            <div class="result-item result-highlight">
+                <div class="label">Break-Even Revenue</div>
+                <div class="value">£${formatCurrency(breakEvenRevenue)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Contribution Margin</div>
+                <div class="value">£${formatCurrency(contributionMargin)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Fixed Costs</div>
+                <div class="value">£${formatCurrency(fixedCosts)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// PROFIT MARGIN CALCULATOR
+// ==========================================
+
+function calculateProfitMargin() {
+    const revenue = parseFloat(document.getElementById('pm-revenue').value) || 0;
+    const cost = parseFloat(document.getElementById('pm-cost').value) || 0;
+    
+    const profit = revenue - cost;
+    const grossMargin = (profit / revenue) * 100;
+    const markup = (profit / cost) * 100;
+    
+    document.getElementById('pm-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Profit</div>
+                <div class="value">£${formatCurrency(profit)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Gross Margin</div>
+                <div class="value">${grossMargin.toFixed(2)}%</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Markup</div>
+                <div class="value">${markup.toFixed(2)}%</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Revenue</div>
+                <div class="value">£${formatCurrency(revenue)}</div>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// CASH FLOW PROJECTOR
+// ==========================================
+
+function calculateCashFlow() {
+    const startingBalance = parseFloat(document.getElementById('cf-balance').value) || 0;
+    const monthlyIncome = parseFloat(document.getElementById('cf-income').value) || 0;
+    const monthlyExpenses = parseFloat(document.getElementById('cf-expenses').value) || 0;
+    const months = parseInt(document.getElementById('cf-months').value) || 12;
+    
+    const netMonthly = monthlyIncome - monthlyExpenses;
+    
+    let html = '<h3 style="margin-bottom: 15px;">Monthly Projection</h3>';
+    html += '<div class="tax-breakdown">';
+    
+    let balance = startingBalance;
+    for (let i = 1; i <= months; i++) {
+        balance += netMonthly;
+        const balanceClass = balance < 0 ? 'color: var(--error)' : 'color: var(--success)';
+        html += `
+            <div class="tax-row">
+                <span class="label">Month ${i}</span>
+                <span class="amount" style="${balanceClass}">£${formatCurrency(balance)}</span>
+            </div>
+        `;
+    }
+    html += '</div>';
+    
+    const endBalance = startingBalance + (netMonthly * months);
+    
+    document.getElementById('cf-results').innerHTML = `
+        <div class="results-grid">
+            <div class="result-item result-highlight">
+                <div class="label">Ending Balance</div>
+                <div class="value">£${formatCurrency(endBalance)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">Net Monthly</div>
+                <div class="value">£${formatCurrency(netMonthly)}</div>
+            </div>
+            <div class="result-item">
+                <div class="label">12-Month Total</div>
+                <div class="value">£${formatCurrency(netMonthly * 12)}</div>
+            </div>
+        </div>
+        ${html}
+    `;
+}
