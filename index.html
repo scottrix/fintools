@@ -306,7 +306,7 @@
                 <div class="button-group">
                     <button onclick="convertCurrency()">Convert</button>
                 </div>
-                <div class="rate-info" id="rate-info"></div>
+<div class="rate-info" id="crypto-rate-info"></div>
             </div>
         </div>
 
@@ -528,6 +528,9 @@
 <select id="crypto-from">
 <option value="BTC">BTC - Bitcoin</option>
 <option value="ETH">ETH - Ethereum</option>
+<option value="XRP">XRP - Ripple</option>
+<option value="ADA">ADA - Cardano</option>
+<option value="SOL">SOL - Solana</option>
 <option value="USD" selected>USD - US Dollar</option>
 <option value="EUR">EUR - Euro</option>
 <option value="GBP">GBP - British Pound</option>
@@ -539,6 +542,9 @@
 <select id="crypto-to">
 <option value="BTC">BTC - Bitcoin</option>
 <option value="ETH">ETH - Ethereum</option>
+<option value="XRP">XRP - Ripple</option>
+<option value="ADA">ADA - Cardano</option>
+<option value="SOL">SOL - Solana</option>
 <option value="USD">USD - US Dollar</option>
 <option value="EUR">EUR - Euro</option>
 <option value="GBP" selected>GBP - British Pound</option>
@@ -548,7 +554,7 @@
 <div class="button-group">
 <button onclick="calculateCrypto()">Convert</button>
 </div>
-<p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">Rates are approximate and for informational purposes only.</p>
+<div class="rate-info" id="rate-info"></div>
 </div>
 </div>
 

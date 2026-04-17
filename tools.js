@@ -109,42 +109,82 @@ function formatCurrency(amount, decimals = 2) {
 // ==========================================
 
 const exchangeRates = {
-    USD: { EUR: 0.92, GBP: 0.79, JPY: 154.5, AUD: 1.53, CAD: 1.36, CHF: 0.90, CNY: 7.24, INR: 83.5, MXN: 16.8, NZD: 1.66, SGD: 1.35, HKD: 7.82, KRW: 1365, ZAR: 18.5 },
-    EUR: { USD: 1.09, GBP: 0.86, JPY: 168, AUD: 1.67, CAD: 1.48, CHF: 0.98, CNY: 7.88, INR: 90.8, MXN: 18.3, NZD: 1.81, SGD: 1.47, HKD: 8.51, KRW: 1485, ZAR: 20.1 },
-    GBP: { USD: 1.27, EUR: 1.16, JPY: 195, AUD: 1.94, CAD: 1.72, CHF: 1.14, CNY: 9.15, INR: 105.5, MXN: 21.3, NZD: 2.10, SGD: 1.71, HKD: 9.89, KRW: 1725, ZAR: 23.4 },
-    JPY: { USD: 0.0065, EUR: 0.0060, GBP: 0.0051, AUD: 0.0099, CAD: 0.0088, CHF: 0.0058, CNY: 0.047, INR: 0.54, MXN: 0.11, NZD: 0.011, SGD: 0.0087, HKD: 0.051, KRW: 8.85, ZAR: 0.12 },
-    AUD: { USD: 0.65, EUR: 0.60, GBP: 0.52, JPY: 101, CAD: 0.89, CHF: 0.59, CNY: 4.73, INR: 54.5, MXN: 11.0, NZD: 1.09, SGD: 0.88, HKD: 5.11, KRW: 892, ZAR: 12.1 },
-    CAD: { USD: 0.74, EUR: 0.68, GBP: 0.58, JPY: 113.5, AUD: 1.13, CHF: 0.66, CNY: 5.33, INR: 61.4, MXN: 12.4, NZD: 1.22, SGD: 0.99, HKD: 5.75, KRW: 1004, ZAR: 13.6 },
-    CHF: { USD: 1.11, EUR: 1.02, GBP: 0.88, JPY: 172, AUD: 1.70, CAD: 1.51, CNY: 8.04, INR: 92.7, MXN: 18.7, NZD: 1.84, SGD: 1.50, HKD: 8.69, KRW: 1517, ZAR: 20.6 },
-    CNY: { USD: 0.14, EUR: 0.13, GBP: 0.11, JPY: 21.3, AUD: 0.21, CAD: 0.19, CHF: 0.12, INR: 11.5, MXN: 2.32, NZD: 0.23, SGD: 0.19, HKD: 1.08, KRW: 188.5, ZAR: 2.56 },
-    INR: { USD: 0.012, EUR: 0.011, GBP: 0.0095, JPY: 1.85, AUD: 0.018, CAD: 0.016, CHF: 0.011, CNY: 0.087, MXN: 0.20, NZD: 0.020, SGD: 0.016, HKD: 0.094, KRW: 16.35, ZAR: 0.22 },
-    MXN: { USD: 0.060, EUR: 0.055, GBP: 0.047, JPY: 9.19, AUD: 0.091, CAD: 0.081, CHF: 0.054, CNY: 0.43, INR: 4.97, NZD: 0.099, SGD: 0.080, HKD: 0.47, KRW: 81.3, ZAR: 1.10 },
-    NZD: { USD: 0.60, EUR: 0.55, GBP: 0.48, JPY: 91.5, AUD: 0.92, CAD: 0.82, CHF: 0.54, CNY: 4.36, INR: 50.2, MXN: 10.1, SGD: 0.82, HKD: 4.72, KRW: 822, ZAR: 11.2 },
-    SGD: { USD: 0.74, EUR: 0.68, GBP: 0.59, JPY: 114.5, AUD: 1.14, CAD: 1.01, CHF: 0.67, CNY: 5.36, INR: 61.8, MXN: 12.5, NZD: 1.22, HKD: 5.79, KRW: 1010, ZAR: 13.7 },
-    HKD: { USD: 0.13, EUR: 0.12, GBP: 0.10, JPY: 19.8, AUD: 0.20, CAD: 0.17, CHF: 0.12, CNY: 0.93, INR: 10.7, MXN: 2.15, NZD: 0.21, SGD: 0.17, KRW: 174.5, ZAR: 2.37 },
-    KRW: { USD: 0.00073, EUR: 0.00067, GBP: 0.00058, JPY: 0.113, AUD: 0.0011, CAD: 0.0010, CHF: 0.00066, CNY: 0.0053, INR: 0.061, MXN: 0.012, NZD: 0.0012, SGD: 0.00099, HKD: 0.0057, ZAR: 0.014 },
-    ZAR: { USD: 0.054, EUR: 0.050, GBP: 0.043, JPY: 8.35, AUD: 0.083, CAD: 0.074, CHF: 0.049, CNY: 0.39, INR: 4.53, MXN: 0.91, NZD: 0.089, SGD: 0.073, HKD: 0.42, KRW: 73.8 }
+  USD: { EUR: 0.92, GBP: 0.79, JPY: 154.5, AUD: 1.53, CAD: 1.36, CHF: 0.90, CNY: 7.24, INR: 83.5, MXN: 16.8, NZD: 1.66, SGD: 1.35, HKD: 7.82, KRW: 1365, ZAR: 18.5 },
+  EUR: { USD: 1.09, GBP: 0.86, JPY: 168, AUD: 1.67, CAD: 1.48, CHF: 0.98, CNY: 7.88, INR: 90.8, MXN: 18.3, NZD: 1.81, SGD: 1.47, HKD: 8.51, KRW: 1485, ZAR: 20.1 },
+  GBP: { USD: 1.27, EUR: 1.16, JPY: 195, AUD: 1.94, CAD: 1.72, CHF: 1.14, CNY: 9.15, INR: 105.5, MXN: 21.3, NZD: 2.10, SGD: 1.71, HKD: 9.89, KRW: 1725, ZAR: 23.4 },
+  JPY: { USD: 0.0065, EUR: 0.0060, GBP: 0.0051, AUD: 0.0099, CAD: 0.0088, CHF: 0.0058, CNY: 0.047, INR: 0.54, MXN: 0.11, NZD: 0.011, SGD: 0.0087, HKD: 0.051, KRW: 8.85, ZAR: 0.12 },
+  AUD: { USD: 0.65, EUR: 0.60, GBP: 0.52, JPY: 101, CAD: 0.89, CHF: 0.59, CNY: 4.73, INR: 54.5, MXN: 11.0, NZD: 1.09, SGD: 0.88, HKD: 5.11, KRW: 892, ZAR: 12.1 },
+  CAD: { USD: 0.74, EUR: 0.68, GBP: 0.58, JPY: 113.5, AUD: 1.13, CHF: 0.66, CNY: 5.33, INR: 61.4, MXN: 12.4, NZD: 1.22, SGD: 0.99, HKD: 5.75, KRW: 1004, ZAR: 13.6 },
+  CHF: { USD: 1.11, EUR: 1.02, GBP: 0.88, JPY: 172, AUD: 1.70, CAD: 1.51, CNY: 8.04, INR: 92.7, MXN: 18.7, NZD: 1.84, SGD: 1.50, HKD: 8.69, KRW: 1517, ZAR: 20.6 },
+  CNY: { USD: 0.14, EUR: 0.13, GBP: 0.11, JPY: 21.3, AUD: 0.21, CAD: 0.19, CHF: 0.12, INR: 11.5, MXN: 2.32, NZD: 0.23, SGD: 0.19, HKD: 1.08, KRW: 188.5, ZAR: 2.56 },
+  INR: { USD: 0.012, EUR: 0.011, GBP: 0.0095, JPY: 1.85, AUD: 0.018, CAD: 0.016, CHF: 0.011, CNY: 0.087, MXN: 0.20, NZD: 0.020, SGD: 0.016, HKD: 0.094, KRW: 16.35, ZAR: 0.22 },
+  MXN: { USD: 0.060, EUR: 0.055, GBP: 0.047, JPY: 9.19, AUD: 0.091, CAD: 0.081, CHF: 0.054, CNY: 0.43, INR: 4.97, NZD: 0.099, SGD: 0.080, HKD: 0.47, KRW: 81.3, ZAR: 1.10 },
+  NZD: { USD: 0.60, EUR: 0.55, GBP: 0.48, JPY: 91.5, AUD: 0.92, CAD: 0.82, CHF: 0.54, CNY: 4.36, INR: 50.2, MXN: 10.1, SGD: 0.82, HKD: 4.72, KRW: 822, ZAR: 11.2 },
+  SGD: { USD: 0.74, EUR: 0.68, GBP: 0.59, JPY: 114.5, AUD: 1.14, CAD: 1.01, CHF: 0.67, CNY: 5.36, INR: 61.8, MXN: 12.5, NZD: 1.22, HKD: 5.79, KRW: 1010, ZAR: 13.7 },
+  HKD: { USD: 0.13, EUR: 0.12, GBP: 0.10, JPY: 19.8, AUD: 0.20, CAD: 0.17, CHF: 0.12, CNY: 0.93, INR: 10.7, MXN: 2.15, NZD: 0.21, SGD: 0.17, KRW: 174.5, ZAR: 2.37 },
+  KRW: { USD: 0.00073, EUR: 0.00067, GBP: 0.00058, JPY: 0.113, AUD: 0.0011, CAD: 0.0010, CHF: 0.00066, CNY: 0.0053, INR: 0.061, MXN: 0.012, NZD: 0.0012, SGD: 0.00099, HKD: 0.0057, ZAR: 0.014 },
+  ZAR: { USD: 0.054, EUR: 0.050, GBP: 0.043, JPY: 8.35, AUD: 0.083, CAD: 0.074, CHF: 0.049, CNY: 0.39, INR: 4.53, MXN: 0.91, NZD: 0.089, SGD: 0.073, HKD: 0.42, KRW: 73.8 }
 };
 
+let liveExchangeRates = null;
+let exchangeRatesLastFetch = 0;
+const EXCHANGE_RATES_CACHE_MS = 3600000;
+
+async function fetchLiveExchangeRates() {
+  const now = Date.now();
+  if (liveExchangeRates && (now - exchangeRatesLastFetch) < EXCHANGE_RATES_CACHE_MS) {
+    return liveExchangeRates;
+  }
+  
+  try {
+    const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
+    liveExchangeRates = data.rates;
+    exchangeRatesLastFetch = now;
+    return liveExchangeRates;
+  } catch (e) {
+    console.log('Using fallback exchange rates');
+    return null;
+  }
+}
+
 function convertCurrency() {
-    const amount = parseFloat(document.getElementById('currency-amount').value) || 0;
-    const from = document.getElementById('currency-from').value;
-    const to = document.getElementById('currency-to').value;
+  const amount = parseFloat(document.getElementById('currency-amount').value) || 0;
+  const from = document.getElementById('currency-from').value;
+  const to = document.getElementById('currency-to').value;
+
+  fetchLiveExchangeRates().then(rates => {
+    let result, rate;
     
-    let result;
-    if (from === to) {
+    if (rates) {
+      if (from === to) {
         result = amount;
-    } else {
-        const rate = exchangeRates[from]?.[to] || 1;
+        rate = 1;
+      } else {
+        const fromRate = rates[from] || 1;
+        const toRate = rates[to] || 1;
+        rate = toRate / fromRate;
         result = amount * rate;
+      }
+      document.getElementById('rate-info').innerHTML = 
+        `<strong>1 ${from}</strong> = <strong>${rate.toFixed(4)} ${to}</strong><br>
+        <span style="font-size: 12px; color: var(--success);">✓ Live rates</span>`;
+    } else {
+      if (from === to) {
+        result = amount;
+        rate = 1;
+      } else {
+        rate = exchangeRates[from]?.[to] || 1;
+        result = amount * rate;
+      }
+      document.getElementById('rate-info').innerHTML = 
+        `<strong>1 ${from}</strong> = <strong>${rate.toFixed(4)} ${to}</strong><br>
+        <span style="font-size: 12px; color: var(--text-secondary);">Using cached rates</span>`;
     }
     
     document.getElementById('currency-result').value = result.toFixed(4);
-    
-    const rate = from === to ? 1 : (exchangeRates[from]?.[to] || 1);
-    document.getElementById('rate-info').innerHTML = 
-        `<strong>1 ${from}</strong> = <strong>${rate.toFixed(4)} ${to}</strong><br>
-        <span style="font-size: 12px; color: var(--text-secondary);">Rates are approximate. Check your bank for actual rates.</span>`;
+  });
 }
 
 function swapCurrencies() {
@@ -583,35 +623,96 @@ function calculateInflation() {
 // ==========================================
 
 const cryptoRates = {
-    BTC: { USD: 67000, EUR: 61640, GBP: 52930, ETH: 22.5 },
-    ETH: { USD: 3400, EUR: 3128, GBP: 2686, BTC: 0.044 },
-    XRP: { USD: 0.52, EUR: 0.48, GBP: 0.41, BTC: 0.0000078 },
-    ADA: { USD: 0.45, EUR: 0.41, GBP: 0.36, BTC: 0.0000067 },
-    SOL: { USD: 145, EUR: 133, GBP: 115, BTC: 0.0022 },
-    DOGE: { USD: 0.12, EUR: 0.11, GBP: 0.095, BTC: 0.0000018 },
-    DOT: { USD: 7.20, EUR: 6.62, GBP: 5.69, BTC: 0.00011 },
-    MATIC: { USD: 0.58, EUR: 0.53, GBP: 0.46, BTC: 0.0000087 },
-    LINK: { USD: 14.50, EUR: 13.34, GBP: 11.46, BTC: 0.00022 },
-    AVAX: { USD: 36, EUR: 33.12, GBP: 28.44, BTC: 0.00054 }
+  BTC: { USD: 67000, EUR: 61640, GBP: 52930, ETH: 22.5 },
+  ETH: { USD: 3400, EUR: 3128, GBP: 2686, BTC: 0.044 },
+  XRP: { USD: 0.52, EUR: 0.48, GBP: 0.41, BTC: 0.0000078 },
+  ADA: { USD: 0.45, EUR: 0.41, GBP: 0.36, BTC: 0.0000067 },
+  SOL: { USD: 145, EUR: 133, GBP: 115, BTC: 0.0022 },
+  DOGE: { USD: 0.12, EUR: 0.11, GBP: 0.095, BTC: 0.0000018 },
+  DOT: { USD: 7.20, EUR: 6.62, GBP: 5.69, BTC: 0.00011 },
+  MATIC: { USD: 0.58, EUR: 0.53, GBP: 0.46, BTC: 0.0000087 },
+  LINK: { USD: 14.50, EUR: 13.34, GBP: 11.46, BTC: 0.00022 },
+  AVAX: { USD: 36, EUR: 33.12, GBP: 28.44, BTC: 0.00054 }
 };
 
-function calculateCrypto() {
-    const amount = parseFloat(document.getElementById('crypto-amount').value) || 0;
-    const from = document.getElementById('crypto-from').value;
-    const to = document.getElementById('crypto-to').value;
+let liveCryptoRates = null;
+let cryptoRatesLastFetch = 0;
+const CRYPTO_RATES_CACHE_MS = 300000;
+
+const cryptoIds = {
+  BTC: 'bitcoin',
+  ETH: 'ethereum',
+  XRP: 'ripple',
+  ADA: 'cardano',
+  SOL: 'solana',
+  DOGE: 'dogecoin',
+  DOT: 'polkadot',
+  MATIC: 'matic-network',
+  LINK: 'chainlink',
+  AVAX: 'avalanche-2'
+};
+
+async function fetchLiveCryptoRates() {
+  const now = Date.now();
+  if (liveCryptoRates && (now - cryptoRatesLastFetch) < CRYPTO_RATES_CACHE_MS) {
+    return liveCryptoRates;
+  }
+  
+  try {
+    const ids = Object.values(cryptoIds).join(',');
+    const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd,eur,gbp,btc`);
+    if (!response.ok) throw new Error('API error');
+    const data = await response.json();
     
-    let result;
-    if (from === to) {
-        result = amount;
-    } else if (cryptoRates[from] && cryptoRates[from][to]) {
-        result = amount * cryptoRates[from][to];
-    } else if (cryptoRates[to] && cryptoRates[to][from]) {
-        result = amount / cryptoRates[to][from];
-    } else {
-        result = 0;
+    liveCryptoRates = {};
+    for (const [symbol, id] of Object.entries(cryptoIds)) {
+      if (data[id]) {
+        liveCryptoRates[symbol] = {
+          USD: data[id].usd,
+          EUR: data[id].eur,
+          GBP: data[id].gbp,
+          BTC: data[id].btc
+        };
+      }
     }
+    cryptoRatesLastFetch = now;
+    return liveCryptoRates;
+  } catch (e) {
+    console.log('Using fallback crypto rates');
+    return null;
+  }
+}
+
+function calculateCrypto() {
+  const amount = parseFloat(document.getElementById('crypto-amount').value) || 0;
+  const from = document.getElementById('crypto-from').value;
+  const to = document.getElementById('crypto-to').value;
+
+  fetchLiveCryptoRates().then(rates => {
+    let result;
+    const activeRates = rates || cryptoRates;
     
+    if (from === to) {
+      result = amount;
+    } else if (activeRates[from] && activeRates[from][to]) {
+      result = amount * activeRates[from][to];
+    } else if (activeRates[to] && activeRates[to][from]) {
+      result = amount / activeRates[to][from];
+    } else {
+      result = 0;
+    }
+
     document.getElementById('crypto-result').value = result.toFixed(8);
+    
+    const rateInfo = document.getElementById('crypto-rate-info');
+    if (rateInfo) {
+      const rate = from === to ? 1 : (activeRates[from]?.[to] || (activeRates[to]?.[from] ? 1/activeRates[to][from] : 0));
+      const source = rates ? 
+        '<span style="font-size: 12px; color: var(--success);">✓ Live rates (CoinGecko)</span>' :
+        '<span style="font-size: 12px; color: var(--text-secondary);">Using cached rates</span>';
+      rateInfo.innerHTML = `<strong>1 ${from}</strong> ≈ <strong>${rate.toFixed(8)} ${to}</strong><br>${source}`;
+    }
+  });
 }
 
 // ==========================================
