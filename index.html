@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinTools - Free Online Financial Calculators | Currency, Mortgage, Tax & More</title>
+    
+    <meta name="description" content="Free online financial calculators: Currency converter, mortgage calculator, UK & US tax calculators, compound interest, salary converter, loan payoff & more. All client-side, fast & private.">
+    <meta name="keywords" content="currency converter, mortgage calculator, tax calculator, uk tax, us tax, compound interest, salary calculator, loan calculator, inflation calculator, retirement calculator, investment calculator">
+    <meta name="author" content="Scott Harrison">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://scottrix.github.io/fintools/">
+    
+    <meta property="og:title" content="FinTools - Free Online Financial Calculators">
+    <meta property="og:description" content="Free financial calculators: Currency, mortgage, tax, compound interest, salary & more. All client-side, fast & private.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://scottrix.github.io/fintools/">
+    <meta property="og:site_name" content="FinTools">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="FinTools - Free Online Financial Calculators">
+    <meta name="twitter:description" content="Free financial calculators: Currency, mortgage, tax, compound interest & more.">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "FinTools",
+        "description": "Free online financial calculators: Currency converter, mortgage calculator, tax calculators, compound interest, and more.",
+        "url": "https://scottrix.github.io/fintools/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Currency Converter",
+            "Mortgage Calculator",
+            "UK Tax Calculator",
+            "US Tax Calculator",
+            "Compound Interest Calculator",
+            "Salary Calculator",
+            "Loan Calculator",
+            "Inflation Calculator"
+        ]
+    }
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5741314833802600" crossorigin="anonymous"></script>
+</head>
+<body>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle menu">☰</button>
+    <div class="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+    
+    <nav class="sidebar">
+        <div class="logo">
+            <h1>FinTools</h1>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+        <ul class="nav-categories">
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">💱</span> Currency
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="currency-converter">Currency Converter</a></li>
+                    <li><a href="#" data-tool="crypto-converter">Crypto Converter</a></li>
+                    <li><a href="#" data-tool="historical-rates">Historical Rates</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">🏠</span> Mortgage & Property
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="mortgage-calculator">Mortgage Calculator</a></li>
+                    <li><a href="#" data-tool="rent-vs-buy">Rent vs Buy</a></li>
+                    <li><a href="#" data-tool="stamp-duty">Stamp Duty (UK)</a></li>
+                    <li><a href="#" data-tool="affordability">Affordability Calculator</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">💷</span> UK Tax
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="uk-income-tax">Income Tax Calculator</a></li>
+                    <li><a href="#" data-tool="uk-self-employed">Self-Employed Tax</a></li>
+                    <li><a href="#" data-tool="uk-dividend">Dividend Tax</a></li>
+                    <li><a href="#" data-tool="uk-capital-gains">Capital Gains Tax</a></li>
+                    <li><a href="#" data-tool="ir35">IR35 Calculator</a></li>
+                    <li><a href="#" data-tool="uk-vat">VAT Calculator</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">💵</span> US Tax
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="us-income-tax">Income Tax Calculator</a></li>
+                    <li><a href="#" data-tool="us-self-employed">Self-Employment Tax</a></li>
+                    <li><a href="#" data-tool="us-capital-gains">Capital Gains Tax</a></li>
+                    <li><a href="#" data-tool="us-state-compare">State Tax Comparison</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">📈</span> Investment
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="compound-interest">Compound Interest</a></li>
+                    <li><a href="#" data-tool="fire-calculator">FIRE Calculator</a></li>
+                    <li><a href="#" data-tool="investment-fees">Investment Fee Analyzer</a></li>
+                    <li><a href="#" data-tool="dividend-reinvestment">Dividend Reinvestment</a></li>
+                    <li><a href="#" data-tool="roi-calculator">ROI Calculator</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">💼</span> Salary & Income
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="salary-converter">Salary Converter</a></li>
+                    <li><a href="#" data-tool="hourly-salary">Hourly ↔ Salary</a></li>
+                    <li><a href="#" data-tool="remote-salary">Remote Salary Adjuster</a></li>
+                    <li><a href="#" data-tool="paycheck">Paycheck Calculator</a></li>
+                    <li><a href="#" data-tool="contractor-rate">Contractor Rate</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">🏦</span> Loans & Debt
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="loan-calculator">Loan Calculator</a></li>
+                    <li><a href="#" data-tool="debt-payoff">Debt Payoff Strategy</a></li>
+                    <li><a href="#" data-tool="dti-calculator">Debt-to-Income Ratio</a></li>
+                    <li><a href="#" data-tool="bnpl">BNPL Comparison</a></li>
+                    <li><a href="#" data-tool="apr-calculator">APR Calculator</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">📊</span> Inflation
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="inflation-calculator">Inflation Calculator</a></li>
+                    <li><a href="#" data-tool="personal-inflation">Personal Inflation Rate</a></li>
+                    <li><a href="#" data-tool="purchasing-power">Purchasing Power</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">🏖️</span> Retirement
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="retirement-calculator">Retirement Calculator</a></li>
+                    <li><a href="#" data-tool="pension-calculator">Pension Calculator (UK)</a></li>
+                    <li><a href="#" data-tool="401k-calculator">401k Calculator</a></li>
+                    <li><a href="#" data-tool="social-security">Social Security Estimator</a></li>
+                </ul>
+            </li>
+            <li class="category">
+                <span class="category-header" onclick="toggleCategory(this)">
+                    <span class="icon">📋</span> Business
+                    <span class="arrow">▼</span>
+                </span>
+                <ul class="nav-items">
+                    <li><a href="#" data-tool="break-even">Break-Even Calculator</a></li>
+                    <li><a href="#" data-tool="profit-margin">Profit Margin</a></li>
+                    <li><a href="#" data-tool="cash-flow">Cash Flow Projector</a></li>
+                    <li><a href="#" data-tool="invoice-calculator">Invoice Calculator</a></li>
+                </ul>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="mailto:fintools@scott.scottrix.co.uk" class="contact-link">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Report an Issue
+            </a>
+        </div>
+    </nav>
+
+    <main class="content">
+        <div id="welcome" class="tool-panel active">
+            <h2>Welcome to FinTools</h2>
+            <p class="welcome-msg-desktop">Select a calculator from the sidebar to get started.</p>
+            <p class="welcome-msg-mobile">Tap the menu button (☰) or a category below to get started.</p>
+            <div class="feature-grid">
+                <div class="feature-card" onclick="scrollToCategory(0)">
+                    <span class="feature-icon">💱</span>
+                    <h3>Currency</h3>
+                    <p>Currency conversion, crypto rates, historical data.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(1)">
+                    <span class="feature-icon">🏠</span>
+                    <h3>Mortgage</h3>
+                    <p>Mortgage, affordability, rent vs buy analysis.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(2)">
+                    <span class="feature-icon">💷</span>
+                    <h3>UK Tax</h3>
+                    <p>Income tax, dividends, capital gains, IR35.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(3)">
+                    <span class="feature-icon">💵</span>
+                    <h3>US Tax</h3>
+                    <p>Federal, state, self-employment, capital gains.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(4)">
+                    <span class="feature-icon">📈</span>
+                    <h3>Investment</h3>
+                    <p>Compound interest, FIRE, ROI calculations.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(5)">
+                    <span class="feature-icon">💼</span>
+                    <h3>Salary</h3>
+                    <p>Take-home pay, hourly conversions, adjustments.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(6)">
+                    <span class="feature-icon">🏦</span>
+                    <h3>Loans</h3>
+                    <p>Loan payoff, debt strategies, APR.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(7)">
+                    <span class="feature-icon">📊</span>
+                    <h3>Inflation</h3>
+                    <p>Personal inflation, purchasing power analysis.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(8)">
+                    <span class="feature-icon">🏖️</span>
+                    <h3>Retirement</h3>
+                    <p>Retirement planning, pensions, 401k.</p>
+                </div>
+                <div class="feature-card" onclick="scrollToCategory(9)">
+                    <span class="feature-icon">📋</span>
+                    <h3>Business</h3>
+                    <p>Break-even, profit margins, cash flow.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currency Converter -->
+        <div id="currency-converter" class="tool-panel">
+            <h2>Currency Converter</h2>
+            <div class="tool-container">
+                <div class="converter-row">
+                    <div class="currency-input">
+                        <input type="number" id="currency-amount" placeholder="Enter amount" value="1">
+                        <select id="currency-from">
+                            <option value="USD">USD - US Dollar</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP" selected>GBP - British Pound</option>
+                            <option value="JPY">JPY - Japanese Yen</option>
+                            <option value="AUD">AUD - Australian Dollar</option>
+                            <option value="CAD">CAD - Canadian Dollar</option>
+                            <option value="CHF">CHF - Swiss Franc</option>
+                            <option value="CNY">CNY - Chinese Yuan</option>
+                            <option value="INR">INR - Indian Rupee</option>
+                            <option value="MXN">MXN - Mexican Peso</option>
+                            <option value="NZD">NZD - New Zealand Dollar</option>
+                            <option value="SGD">SGD - Singapore Dollar</option>
+                            <option value="HKD">HKD - Hong Kong Dollar</option>
+                            <option value="KRW">KRW - South Korean Won</option>
+                            <option value="ZAR">ZAR - South African Rand</option>
+                        </select>
+                    </div>
+                    <button onclick="swapCurrencies()" class="swap-btn" title="Swap currencies">⇄</button>
+                    <div class="currency-input">
+                        <input type="number" id="currency-result" readonly>
+                        <select id="currency-to">
+                            <option value="USD" selected>USD - US Dollar</option>
+                            <option value="EUR">EUR - Euro</option>
+                            <option value="GBP">GBP - British Pound</option>
+                            <option value="JPY">JPY - Japanese Yen</option>
+                            <option value="AUD">AUD - Australian Dollar</option>
+                            <option value="CAD">CAD - Canadian Dollar</option>
+                            <option value="CHF">CHF - Swiss Franc</option>
+                            <option value="CNY">CNY - Chinese Yuan</option>
+                            <option value="INR">INR - Indian Rupee</option>
+                            <option value="MXN">MXN - Mexican Peso</option>
+                            <option value="NZD">NZD - New Zealand Dollar</option>
+                            <option value="SGD">SGD - Singapore Dollar</option>
+                            <option value="HKD">HKD - Hong Kong Dollar</option>
+                            <option value="KRW">KRW - South Korean Won</option>
+                            <option value="ZAR">ZAR - South African Rand</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="convertCurrency()">Convert</button>
+                </div>
+                <div class="rate-info" id="rate-info"></div>
+            </div>
+        </div>
+
+        <!-- Mortgage Calculator -->
+        <div id="mortgage-calculator" class="tool-panel">
+            <h2>Mortgage Calculator</h2>
+            <div class="tool-container">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Property Price:</label>
+                        <input type="number" id="mortgage-price" placeholder="e.g. 300000" value="300000">
+                    </div>
+                    <div class="input-group">
+                        <label>Deposit:</label>
+                        <input type="number" id="mortgage-deposit" placeholder="e.g. 60000" value="60000">
+                    </div>
+                    <div class="input-group">
+                        <label>Interest Rate (%):</label>
+                        <input type="number" id="mortgage-rate" placeholder="e.g. 5.5" value="5.5" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Loan Term (years):</label>
+                        <input type="number" id="mortgage-term" placeholder="e.g. 25" value="25">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateMortgage()">Calculate</button>
+                </div>
+                <div id="mortgage-results" class="results-panel"></div>
+            </div>
+        </div>
+
+        <!-- UK Income Tax Calculator -->
+        <div id="uk-income-tax" class="tool-panel">
+            <h2>UK Income Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="tax-year-selector">
+                    <label>Tax Year:</label>
+                    <select id="uk-tax-year">
+                        <option value="2024">2024/25</option>
+                        <option value="2023">2023/24</option>
+                    </select>
+                </div>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Gross Annual Salary (£):</label>
+                        <input type="number" id="uk-gross-salary" placeholder="e.g. 50000" value="50000">
+                    </div>
+                    <div class="input-group">
+                        <label>Pension Contribution (%):</label>
+                        <input type="number" id="uk-pension" placeholder="e.g. 5" value="5">
+                    </div>
+                    <div class="input-group">
+                        <label>Student Loan:</label>
+                        <select id="uk-student-loan">
+                            <option value="none">None</option>
+                            <option value="plan1">Plan 1</option>
+                            <option value="plan2">Plan 2</option>
+                            <option value="plan4">Plan 4 (Scotland)</option>
+                            <option value="plan5">Plan 5</option>
+                            <option value="postgrad">Postgraduate</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateUKTax()">Calculate Take-Home Pay</button>
+                </div>
+                <div id="uk-tax-results" class="results-panel"></div>
+            </div>
+        </div>
+
+        <!-- Compound Interest Calculator -->
+        <div id="compound-interest" class="tool-panel">
+            <h2>Compound Interest Calculator</h2>
+            <div class="tool-container">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Principal Amount:</label>
+                        <input type="number" id="ci-principal" placeholder="e.g. 10000" value="10000">
+                    </div>
+                    <div class="input-group">
+                        <label>Annual Interest Rate (%):</label>
+                        <input type="number" id="ci-rate" placeholder="e.g. 7" value="7" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Years:</label>
+                        <input type="number" id="ci-years" placeholder="e.g. 10" value="10">
+                    </div>
+                    <div class="input-group">
+                        <label>Compound Frequency:</label>
+                        <select id="ci-frequency">
+                            <option value="1">Annually</option>
+                            <option value="2">Semi-annually</option>
+                            <option value="4">Quarterly</option>
+                            <option value="12" selected>Monthly</option>
+                            <option value="365">Daily</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Monthly Contribution:</label>
+                        <input type="number" id="ci-monthly" placeholder="e.g. 500" value="500">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateCompoundInterest()">Calculate</button>
+                </div>
+                <div id="ci-results" class="results-panel"></div>
+                <div id="ci-chart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <!-- Salary Converter -->
+        <div id="salary-converter" class="tool-panel">
+            <h2>Salary Converter</h2>
+            <div class="tool-container">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Hours per Week:</label>
+                        <input type="number" id="salary-hours" value="40">
+                    </div>
+                    <div class="input-group">
+                        <label>Days per Week:</label>
+                        <input type="number" id="salary-days" value="5">
+                    </div>
+                </div>
+                <div class="salary-conversions">
+                    <div class="conversion-row">
+                        <label>Annual:</label>
+                        <input type="number" id="salary-annual" placeholder="Annual salary" value="50000">
+                    </div>
+                    <div class="conversion-row">
+                        <label>Monthly:</label>
+                        <input type="number" id="salary-monthly" placeholder="Monthly" readonly>
+                    </div>
+                    <div class="conversion-row">
+                        <label>Weekly:</label>
+                        <input type="number" id="salary-weekly" placeholder="Weekly" readonly>
+                    </div>
+                    <div class="conversion-row">
+                        <label>Daily:</label>
+                        <input type="number" id="salary-daily" placeholder="Daily" readonly>
+                    </div>
+                    <div class="conversion-row">
+                        <label>Hourly:</label>
+                        <input type="number" id="salary-hourly" placeholder="Hourly" readonly>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="convertSalary('annual')">Convert from Annual</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inflation Calculator -->
+        <div id="inflation-calculator" class="tool-panel">
+            <h2>Inflation Calculator</h2>
+            <div class="tool-container">
+                <p class="tool-description">See how inflation affects the purchasing power of money over time.</p>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Amount (£/$):</label>
+                        <input type="number" id="inflation-amount" value="1000">
+                    </div>
+                    <div class="input-group">
+                        <label>From Year:</label>
+                        <input type="number" id="inflation-from-year" value="2010" min="1980" max="2024">
+                    </div>
+                    <div class="input-group">
+                        <label>To Year:</label>
+                        <input type="number" id="inflation-to-year" value="2024" min="1980" max="2024">
+                    </div>
+                    <div class="input-group">
+                        <label>Country:</label>
+                        <select id="inflation-country">
+                            <option value="UK">United Kingdom</option>
+                            <option value="US">United States</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateInflation()">Calculate</button>
+                </div>
+                <div id="inflation-results" class="results-panel"></div>
+            </div>
+        </div>
+
+        <!-- Loan Calculator -->
+        <div id="loan-calculator" class="tool-panel">
+            <h2>Loan Calculator</h2>
+            <div class="tool-container">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label>Loan Amount:</label>
+                        <input type="number" id="loan-amount" value="10000">
+                    </div>
+                    <div class="input-group">
+                        <label>Interest Rate (% APR):</label>
+                        <input type="number" id="loan-rate" value="8" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label>Loan Term (months):</label>
+                        <input type="number" id="loan-term" value="36">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button onclick="calculateLoan()">Calculate</button>
+                </div>
+                <div id="loan-results" class="results-panel"></div>
+            </div>
+        </div>
+
+        <!-- Placeholder for other tools -->
+        <div id="crypto-converter" class="tool-panel">
+            <h2>Crypto Converter</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                    <p class="subtitle">We're working hard to bring you accurate cryptocurrency conversions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="historical-rates" class="tool-panel">
+            <h2>Historical Exchange Rates</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="rent-vs-buy" class="tool-panel">
+            <h2>Rent vs Buy Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="stamp-duty" class="tool-panel">
+            <h2>Stamp Duty Calculator (UK)</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="affordability" class="tool-panel">
+            <h2>Affordability Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="uk-self-employed" class="tool-panel">
+            <h2>UK Self-Employed Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="uk-dividend" class="tool-panel">
+            <h2>UK Dividend Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="uk-capital-gains" class="tool-panel">
+            <h2>UK Capital Gains Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="ir35" class="tool-panel">
+            <h2>IR35 Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="uk-vat" class="tool-panel">
+            <h2>VAT Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="us-income-tax" class="tool-panel">
+            <h2>US Income Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="us-self-employed" class="tool-panel">
+            <h2>US Self-Employment Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="us-capital-gains" class="tool-panel">
+            <h2>US Capital Gains Tax Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="us-state-compare" class="tool-panel">
+            <h2>US State Tax Comparison</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="fire-calculator" class="tool-panel">
+            <h2>FIRE Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="investment-fees" class="tool-panel">
+            <h2>Investment Fee Analyzer</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="dividend-reinvestment" class="tool-panel">
+            <h2>Dividend Reinvestment (DRIP)</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="roi-calculator" class="tool-panel">
+            <h2>ROI Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="hourly-salary" class="tool-panel">
+            <h2>Hourly ↔ Salary Converter</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="remote-salary" class="tool-panel">
+            <h2>Remote Salary Adjuster</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="paycheck" class="tool-panel">
+            <h2>Paycheck Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="contractor-rate" class="tool-panel">
+            <h2>Contractor Rate Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="debt-payoff" class="tool-panel">
+            <h2>Debt Payoff Strategy</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="dti-calculator" class="tool-panel">
+            <h2>Debt-to-Income Ratio</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="bnpl" class="tool-panel">
+            <h2>BNPL Comparison</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="apr-calculator" class="tool-panel">
+            <h2>APR Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="personal-inflation" class="tool-panel">
+            <h2>Personal Inflation Rate</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="purchasing-power" class="tool-panel">
+            <h2>Purchasing Power Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="retirement-calculator" class="tool-panel">
+            <h2>Retirement Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="pension-calculator" class="tool-panel">
+            <h2>Pension Calculator (UK)</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="401k-calculator" class="tool-panel">
+            <h2>401k Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="social-security" class="tool-panel">
+            <h2>Social Security Estimator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="break-even" class="tool-panel">
+            <h2>Break-Even Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="profit-margin" class="tool-panel">
+            <h2>Profit Margin Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="cash-flow" class="tool-panel">
+            <h2>Cash Flow Projector</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="invoice-calculator" class="tool-panel">
+            <h2>Invoice Calculator</h2>
+            <div class="tool-container">
+                <div class="coming-soon">
+                    <span class="icon">🚧</span>
+                    <p>This calculator is coming soon!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>All calculators run entirely in your browser. Your financial data never leaves your device - nothing is sent to any server.</p>
+    </footer>
+
+    <script src="tools.js"></script>
+</body>
+</html>
