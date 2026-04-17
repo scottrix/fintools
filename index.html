@@ -345,10 +345,11 @@
             <div class="tool-container">
                 <div class="tax-year-selector">
                     <label>Tax Year:</label>
-                    <select id="uk-tax-year">
-                        <option value="2024">2024/25</option>
-                        <option value="2023">2023/24</option>
-                    </select>
+<select id="uk-tax-year">
+<option value="2025">2025/26</option>
+<option value="2024">2024/25</option>
+<option value="2023">2023/24</option>
+</select>
                 </div>
                 <div class="input-grid">
                     <div class="input-group">
@@ -675,6 +676,7 @@
 <div class="tax-year-selector">
 <label>Tax Year:</label>
 <select id="self-employed-tax-year">
+<option value="2025">2025/26</option>
 <option value="2024">2024/25</option>
 <option value="2023">2023/24</option>
 </select>
@@ -698,6 +700,7 @@
 <div class="tax-year-selector">
 <label>Tax Year:</label>
 <select id="dividend-tax-year">
+<option value="2025">2025/26</option>
 <option value="2024">2024/25</option>
 <option value="2023">2023/24</option>
 </select>
@@ -812,6 +815,10 @@
 <option value="FL">Florida</option>
 <option value="WA">Washington</option>
 <option value="AZ">Arizona</option>
+<option value="IL">Illinois</option>
+<option value="PA">Pennsylvania</option>
+<option value="OH">Ohio</option>
+<option value="GA">Georgia</option>
 </select>
 </div>
 </div>
@@ -1320,9 +1327,10 @@
 </div>
     </main>
 
-    <footer class="site-footer">
-        <p>All calculators run entirely in your browser. Your financial data never leaves your device - nothing is sent to any server.</p>
-    </footer>
+<footer class="site-footer">
+<p>All calculators run entirely in your browser. Your financial data never leaves your device - nothing is sent to any server.</p>
+<p id="tax-data-updated" style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);"></p>
+</footer>
 
     <script src="tools.js"></script>
 </body>

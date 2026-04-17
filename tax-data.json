@@ -1,0 +1,234 @@
+{
+  "lastUpdated": "2025-04-18",
+  "uk": {
+    "2025": {
+      "personalAllowance": 12570,
+      "basicRate": 0.20,
+      "basicLimit": 50270,
+      "higherRate": 0.40,
+      "additionalRate": 0.45,
+      "additionalLimit": 125140,
+      "niPrimaryThreshold": 12570,
+      "niUpperThreshold": 50270,
+      "niLowerRate": 0.08,
+      "niUpperRate": 0.02,
+      "class2NI": 179.40,
+      "dividendAllowance": 500,
+      "capitalGainsExempt": 3000,
+      "studentLoanThresholds": {
+        "plan1": 26100,
+        "plan2": 27295,
+        "plan4": 32185,
+        "plan5": 25000,
+        "postgrad": 21000
+      },
+      "studentLoanRates": {
+        "plan1": 0.09,
+        "plan2": 0.09,
+        "plan4": 0.09,
+        "plan5": 0.09,
+        "postgrad": 0.06
+      },
+      "vatRates": {
+        "standard": 20,
+        "reduced": 5,
+        "zero": 0
+      },
+      "stampDuty": {
+        "firstTimeBuyerRelief": {
+          "nilRateBand": 425000,
+          "taperBand": 625000
+        },
+        "standard": [
+          { "threshold": 125000, "rate": 0 },
+          { "threshold": 250000, "rate": 0.02 },
+          { "threshold": 925000, "rate": 0.05 },
+          { "threshold": 1500000, "rate": 0.10 },
+          { "threshold": null, "rate": 0.12 }
+        ],
+        "additional": {
+          "surcharge": 0.03
+        }
+      }
+    },
+    "2024": {
+      "personalAllowance": 12570,
+      "basicRate": 0.20,
+      "basicLimit": 50270,
+      "higherRate": 0.40,
+      "additionalRate": 0.45,
+      "additionalLimit": 125140,
+      "niPrimaryThreshold": 12570,
+      "niUpperThreshold": 50270,
+      "niLowerRate": 0.08,
+      "niUpperRate": 0.02,
+      "class2NI": 179.40,
+      "dividendAllowance": 500,
+      "capitalGainsExempt": 3000,
+      "studentLoanThresholds": {
+        "plan1": 24990,
+        "plan2": 27295,
+        "plan4": 31565,
+        "plan5": 25000,
+        "postgrad": 21000
+      },
+      "studentLoanRates": {
+        "plan1": 0.09,
+        "plan2": 0.09,
+        "plan4": 0.09,
+        "plan5": 0.09,
+        "postgrad": 0.06
+      }
+    },
+    "2023": {
+      "personalAllowance": 12570,
+      "basicRate": 0.20,
+      "basicLimit": 50270,
+      "higherRate": 0.40,
+      "additionalRate": 0.45,
+      "additionalLimit": 125140,
+      "niPrimaryThreshold": 12570,
+      "niUpperThreshold": 50270,
+      "niLowerRate": 0.12,
+      "niUpperRate": 0.02,
+      "class2NI": 179.40,
+      "dividendAllowance": 1000,
+      "capitalGainsExempt": 6000,
+      "studentLoanThresholds": {
+        "plan1": 22615,
+        "plan2": 27295,
+        "plan4": 27660,
+        "plan5": 25000,
+        "postgrad": 21000
+      },
+      "studentLoanRates": {
+        "plan1": 0.09,
+        "plan2": 0.09,
+        "plan4": 0.09,
+        "plan5": 0.09,
+        "postgrad": 0.06
+      }
+    }
+  },
+  "us": {
+    "2025": {
+      "single": [
+        { "min": 0, "max": 11950, "rate": 0.10 },
+        { "min": 11950, "max": 48475, "rate": 0.12 },
+        { "min": 48475, "max": 103350, "rate": 0.22 },
+        { "min": 103350, "max": 197300, "rate": 0.24 },
+        { "min": 197300, "max": 250525, "rate": 0.32 },
+        { "min": 250525, "max": 626350, "rate": 0.35 },
+        { "min": 626350, "max": null, "rate": 0.37 }
+      ],
+      "married": [
+        { "min": 0, "max": 23900, "rate": 0.10 },
+        { "min": 23900, "max": 96950, "rate": 0.12 },
+        { "min": 96950, "max": 206700, "rate": 0.22 },
+        { "min": 206700, "max": 394600, "rate": 0.24 },
+        { "min": 394600, "max": 501050, "rate": 0.32 },
+        { "min": 501050, "max": 752700, "rate": 0.35 },
+        { "min": 752700, "max": null, "rate": 0.37 }
+      ],
+      "standardDeduction": {
+        "single": 15000,
+        "married": 30000
+      },
+      "socialSecurity": {
+        "wageBase": 176100,
+        "rate": 0.062
+      },
+      "medicare": {
+        "rate": 0.0145,
+        "additionalThreshold": {
+          "single": 200000,
+          "married": 250000
+        }
+      },
+      "capitalGains": {
+        "single": [
+          { "min": 0, "max": 48350, "rate": 0 },
+          { "min": 48350, "max": 533400, "rate": 0.15 },
+          { "min": 533400, "max": null, "rate": 0.20 }
+        ],
+        "married": [
+          { "min": 0, "max": 96700, "rate": 0 },
+          { "min": 96700, "max": 600050, "rate": 0.15 },
+          { "min": 600050, "max": null, "rate": 0.20 }
+        ]
+      },
+      "states": [
+        { "name": "California", "abbr": "CA", "rate": 0.093 },
+        { "name": "Texas", "abbr": "TX", "rate": 0 },
+        { "name": "New York", "abbr": "NY", "rate": 0.085 },
+        { "name": "Florida", "abbr": "FL", "rate": 0 },
+        { "name": "Washington", "abbr": "WA", "rate": 0 },
+        { "name": "Arizona", "abbr": "AZ", "rate": 0.025 },
+        { "name": "Illinois", "abbr": "IL", "rate": 0.0495 },
+        { "name": "Pennsylvania", "abbr": "PA", "rate": 0.0307 },
+        { "name": "Ohio", "abbr": "OH", "rate": 0.04 },
+        { "name": "Georgia", "abbr": "GA", "rate": 0.0549 }
+      ]
+    },
+    "2024": {
+      "single": [
+        { "min": 0, "max": 11600, "rate": 0.10 },
+        { "min": 11600, "max": 47150, "rate": 0.12 },
+        { "min": 47150, "max": 100525, "rate": 0.22 },
+        { "min": 100525, "max": 191950, "rate": 0.24 },
+        { "min": 191950, "max": 243725, "rate": 0.32 },
+        { "min": 243725, "max": 609350, "rate": 0.35 },
+        { "min": 609350, "max": null, "rate": 0.37 }
+      ],
+      "married": [
+        { "min": 0, "max": 23200, "rate": 0.10 },
+        { "min": 23200, "max": 94300, "rate": 0.12 },
+        { "min": 94300, "max": 201050, "rate": 0.22 },
+        { "min": 201050, "max": 383900, "rate": 0.24 },
+        { "min": 383900, "max": 487450, "rate": 0.32 },
+        { "min": 487450, "max": 731200, "rate": 0.35 },
+        { "min": 731200, "max": null, "rate": 0.37 }
+      ],
+      "standardDeduction": {
+        "single": 14600,
+        "married": 29200
+      },
+      "socialSecurity": {
+        "wageBase": 168600,
+        "rate": 0.062
+      },
+      "medicare": {
+        "rate": 0.0145,
+        "additionalThreshold": {
+          "single": 200000,
+          "married": 250000
+        }
+      },
+      "capitalGains": {
+        "single": [
+          { "min": 0, "max": 47025, "rate": 0 },
+          { "min": 47025, "max": 518900, "rate": 0.15 },
+          { "min": 518900, "max": null, "rate": 0.20 }
+        ],
+        "married": [
+          { "min": 0, "max": 94050, "rate": 0 },
+          { "min": 94050, "max": 583750, "rate": 0.15 },
+          { "min": 583750, "max": null, "rate": 0.20 }
+        ]
+      },
+      "states": [
+        { "name": "California", "abbr": "CA", "rate": 0.093 },
+        { "name": "Texas", "abbr": "TX", "rate": 0 },
+        { "name": "New York", "abbr": "NY", "rate": 0.085 },
+        { "name": "Florida", "abbr": "FL", "rate": 0 },
+        { "name": "Washington", "abbr": "WA", "rate": 0 },
+        { "name": "Arizona", "abbr": "AZ", "rate": 0.025 }
+      ]
+    }
+  },
+  "notes": {
+    "uk": "UK tax year runs from April 6 to April 5. 2025/26 rates are projected based on Autumn 2024 Budget.",
+    "us": "US tax year is calendar year. 2025 rates are estimated based on inflation adjustments.",
+    "disclaimer": "Tax data is for informational purposes only. Consult a tax professional for accurate advice."
+  }
+}

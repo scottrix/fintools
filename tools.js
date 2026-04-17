@@ -1,7 +1,61 @@
 document.addEventListener('DOMContentLoaded', function() {
-    initNavigation();
-    loadTheme();
+  initNavigation();
+  loadTheme();
+  loadTaxData();
 });
+
+let taxData = null;
+let taxDataLastUpdated = null;
+
+async function loadTaxData() {
+  try {
+    const response = await fetch('tax-data.json');
+    if (!response.ok) throw new Error('Failed to load tax data');
+    taxData = await response.json();
+    taxDataLastUpdated = taxData.lastUpdated;
+    updateTaxYearSelectors();
+    updateFooterDate();
+  } catch (e) {
+    console.log('Using embedded tax data');
+    updateFooterDate();
+  }
+}
+
+function updateFooterDate() {
+  const footerEl = document.getElementById('tax-data-updated');
+  if (footerEl) {
+    const date = taxDataLastUpdated || '2025-04-18';
+    footerEl.textContent = `Tax rates last updated: ${date}. Tax data is for informational purposes only.`;
+  }
+}
+
+function updateTaxYearSelectors() {
+  if (!taxData) return;
+  
+  const ukSelect = document.getElementById('uk-tax-year');
+  if (ukSelect && taxData.uk) {
+    const years = Object.keys(taxData.uk).sort((a, b) => b - a);
+    ukSelect.innerHTML = years.map(y => 
+      `<option value="${y}">${y}/${parseInt(y.toString().slice(-2)) + 1}</option>`
+    ).join('');
+  }
+  
+  const selfEmployedSelect = document.getElementById('self-employed-tax-year');
+  if (selfEmployedSelect && taxData.uk) {
+    const years = Object.keys(taxData.uk).sort((a, b) => b - a);
+    selfEmployedSelect.innerHTML = years.map(y => 
+      `<option value="${y}">${y}/${parseInt(y.toString().slice(-2)) + 1}</option>`
+    ).join('');
+  }
+  
+  const dividendSelect = document.getElementById('dividend-tax-year');
+  if (dividendSelect && taxData.uk) {
+    const years = Object.keys(taxData.uk).sort((a, b) => b - a);
+    dividendSelect.innerHTML = years.map(y => 
+      `<option value="${y}">${y}/${parseInt(y.toString().slice(-2)) + 1}</option>`
+    ).join('');
+  }
+}
 
 function initNavigation() {
     const navLinks = document.querySelectorAll('.nav-items a');
@@ -252,67 +306,73 @@ function calculateMortgage() {
 // ==========================================
 
 const ukTaxBands = {
-    2024: {
-        personalAllowance: 12570,
-        basicRate: 0.20,
-        basicLimit: 50270,
-        higherRate: 0.40,
-        additionalRate: 0.45,
-        additionalLimit: 125140,
-        niPrimaryThreshold: 12570,
-        niUpperThreshold: 50270,
-        niLowerRate: 0.08,
-        niUpperRate: 0.02,
-        studentLoanThresholds: {
-            plan1: 24990,
-            plan2: 27295,
-            plan4: 31565,
-            plan5: 25000,
-            postgrad: 21000
-        },
-        studentLoanRates: {
-            plan1: 0.09,
-            plan2: 0.09,
-            plan4: 0.09,
-            plan5: 0.09,
-            postgrad: 0.06
-        }
-    },
-    2023: {
-        personalAllowance: 12570,
-        basicRate: 0.20,
-        basicLimit: 50270,
-        higherRate: 0.40,
-        additionalRate: 0.45,
-        additionalLimit: 125140,
-        niPrimaryThreshold: 12570,
-        niUpperThreshold: 50270,
-        niLowerRate: 0.12,
-        niUpperRate: 0.02,
-        studentLoanThresholds: {
-            plan1: 22615,
-            plan2: 27295,
-            plan4: 27660,
-            plan5: 25000,
-            postgrad: 21000
-        },
-        studentLoanRates: {
-            plan1: 0.09,
-            plan2: 0.09,
-            plan4: 0.09,
-            plan5: 0.09,
-            postgrad: 0.06
-        }
-    }
+  2025: {
+    personalAllowance: 12570,
+    basicRate: 0.20,
+    basicLimit: 50270,
+    higherRate: 0.40,
+    additionalRate: 0.45,
+    additionalLimit: 125140,
+    niPrimaryThreshold: 12570,
+    niUpperThreshold: 50270,
+    niLowerRate: 0.08,
+    niUpperRate: 0.02,
+    class2NI: 179.40,
+    dividendAllowance: 500,
+    capitalGainsExempt: 3000,
+    studentLoanThresholds: { plan1: 26100, plan2: 27295, plan4: 32185, plan5: 25000, postgrad: 21000 },
+    studentLoanRates: { plan1: 0.09, plan2: 0.09, plan4: 0.09, plan5: 0.09, postgrad: 0.06 }
+  },
+  2024: {
+    personalAllowance: 12570,
+    basicRate: 0.20,
+    basicLimit: 50270,
+    higherRate: 0.40,
+    additionalRate: 0.45,
+    additionalLimit: 125140,
+    niPrimaryThreshold: 12570,
+    niUpperThreshold: 50270,
+    niLowerRate: 0.08,
+    niUpperRate: 0.02,
+    class2NI: 179.40,
+    dividendAllowance: 500,
+    capitalGainsExempt: 3000,
+    studentLoanThresholds: { plan1: 24990, plan2: 27295, plan4: 31565, plan5: 25000, postgrad: 21000 },
+    studentLoanRates: { plan1: 0.09, plan2: 0.09, plan4: 0.09, plan5: 0.09, postgrad: 0.06 }
+  },
+  2023: {
+    personalAllowance: 12570,
+    basicRate: 0.20,
+    basicLimit: 50270,
+    higherRate: 0.40,
+    additionalRate: 0.45,
+    additionalLimit: 125140,
+    niPrimaryThreshold: 12570,
+    niUpperThreshold: 50270,
+    niLowerRate: 0.12,
+    niUpperRate: 0.02,
+    class2NI: 179.40,
+    dividendAllowance: 1000,
+    capitalGainsExempt: 6000,
+    studentLoanThresholds: { plan1: 22615, plan2: 27295, plan4: 27660, plan5: 25000, postgrad: 21000 },
+    studentLoanRates: { plan1: 0.09, plan2: 0.09, plan4: 0.09, plan5: 0.09, postgrad: 0.06 }
+  }
 };
 
+function getUKTaxBands(year) {
+  if (taxData && taxData.uk && taxData.uk[year]) {
+    return taxData.uk[year];
+  }
+  return ukTaxBands[year] || ukTaxBands['2025'];
+}
+
 function calculateUKTax() {
-    const taxYear = document.getElementById('uk-tax-year').value;
-    const grossSalary = parseFloat(document.getElementById('uk-gross-salary').value) || 0;
-    const pensionPercent = parseFloat(document.getElementById('uk-pension').value) || 0;
-    const studentLoan = document.getElementById('uk-student-loan').value;
-    
-    const bands = ukTaxBands[taxYear];
+  const taxYear = document.getElementById('uk-tax-year').value;
+  const grossSalary = parseFloat(document.getElementById('uk-gross-salary').value) || 0;
+  const pensionPercent = parseFloat(document.getElementById('uk-pension').value) || 0;
+  const studentLoan = document.getElementById('uk-student-loan').value;
+
+  const bands = getUKTaxBands(taxYear);
     
     // Pension deduction
     const pension = grossSalary * (pensionPercent / 100);
@@ -913,7 +973,7 @@ function calculateUKSelfEmployed() {
     const profit = parseFloat(document.getElementById('self-employed-profit').value) || 0;
     const taxYear = document.getElementById('self-employed-tax-year').value;
     
-    const bands = ukTaxBands[taxYear] || ukTaxBands['2024'];
+    const bands = getUKTaxBands(taxYear);
     
     // Class 2 NI (if applicable - £3.45/week for 2024/25)
     const class2NI = profit >= 12570 ? 179.40 : 0;
@@ -974,16 +1034,16 @@ function calculateUKSelfEmployed() {
 // ==========================================
 
 function calculateUKDividend() {
-    const dividends = parseFloat(document.getElementById('dividend-amount').value) || 0;
-    const otherIncome = parseFloat(document.getElementById('dividend-other-income').value) || 0;
-    const taxYear = document.getElementById('dividend-tax-year').value;
-    
-    const bands = ukTaxBands[taxYear] || ukTaxBands['2024'];
-    
-    const dividendAllowance = 500; // £500 for 2024/25
-    const basicRate = 0.0875;
-    const higherRate = 0.3375;
-    const additionalRate = 0.3935;
+  const dividends = parseFloat(document.getElementById('dividend-amount').value) || 0;
+  const otherIncome = parseFloat(document.getElementById('dividend-other-income').value) || 0;
+  const taxYear = document.getElementById('dividend-tax-year').value;
+
+  const bands = getUKTaxBands(taxYear);
+
+  const dividendAllowance = bands.dividendAllowance || 500;
+  const basicRate = 0.0875;
+  const higherRate = 0.3375;
+  const additionalRate = 0.3935;
     
     // Calculate how much of other income uses the tax bands
     let otherTaxable = otherIncome;
@@ -1038,17 +1098,19 @@ function calculateUKDividend() {
 // ==========================================
 
 function calculateUKCapitalGains() {
-    const gain = parseFloat(document.getElementById('cg-gain').value) || 0;
-    const assetType = document.getElementById('cg-asset-type').value;
-    const income = parseFloat(document.getElementById('cg-income').value) || 0;
-    
-    const annualExempt = 3000; // £3,000 for 2024/25
-    const residentialRate = income > 50270 ? 0.24 : 0.18;
-    const otherRate = income > 50270 ? 0.20 : 0.10;
-    
-    const taxableGain = Math.max(0, gain - annualExempt);
-    const rate = assetType === 'residential' ? residentialRate : otherRate;
-    const tax = taxableGain * rate;
+  const gain = parseFloat(document.getElementById('cg-gain').value) || 0;
+  const assetType = document.getElementById('cg-asset-type').value;
+  const income = parseFloat(document.getElementById('cg-income').value) || 0;
+
+  const bands = getUKTaxBands('2025');
+  const annualExempt = bands.capitalGainsExempt || 3000;
+  const basicLimit = bands.basicLimit || 50270;
+  const residentialRate = income > basicLimit ? 0.24 : 0.18;
+  const otherRate = income > basicLimit ? 0.20 : 0.10;
+
+  const taxableGain = Math.max(0, gain - annualExempt);
+  const rate = assetType === 'residential' ? residentialRate : otherRate;
+  const tax = taxableGain * rate;
     
     document.getElementById('cg-results').innerHTML = `
         <div class="results-grid">
@@ -1115,54 +1177,91 @@ function calculateVAT() {
 // US INCOME TAX
 // ==========================================
 
-const usTaxBrackets2024 = {
+const usTaxBrackets = {
+  2025: {
     single: [
-        { min: 0, max: 11600, rate: 0.10 },
-        { min: 11600, max: 47150, rate: 0.12 },
-        { min: 47150, max: 100525, rate: 0.22 },
-        { min: 100525, max: 191950, rate: 0.24 },
-        { min: 191950, max: 243725, rate: 0.32 },
-        { min: 243725, max: 609350, rate: 0.35 },
-        { min: 609350, max: Infinity, rate: 0.37 }
+      { min: 0, max: 11950, rate: 0.10 },
+      { min: 11950, max: 48475, rate: 0.12 },
+      { min: 48475, max: 103350, rate: 0.22 },
+      { min: 103350, max: 197300, rate: 0.24 },
+      { min: 197300, max: 250525, rate: 0.32 },
+      { min: 250525, max: 626350, rate: 0.35 },
+      { min: 626350, max: Infinity, rate: 0.37 }
     ],
     married: [
-        { min: 0, max: 23200, rate: 0.10 },
-        { min: 23200, max: 94300, rate: 0.12 },
-        { min: 94300, max: 201050, rate: 0.22 },
-        { min: 201050, max: 383900, rate: 0.24 },
-        { min: 383900, max: 487450, rate: 0.32 },
-        { min: 487450, max: 731200, rate: 0.35 },
-        { min: 731200, max: Infinity, rate: 0.37 }
-    ]
+      { min: 0, max: 23900, rate: 0.10 },
+      { min: 23900, max: 96950, rate: 0.12 },
+      { min: 96950, max: 206700, rate: 0.22 },
+      { min: 206700, max: 394600, rate: 0.24 },
+      { min: 394600, max: 501050, rate: 0.32 },
+      { min: 501050, max: 752700, rate: 0.35 },
+      { min: 752700, max: Infinity, rate: 0.37 }
+    ],
+    socialSecurityWageBase: 176100,
+    standardDeduction: { single: 15000, married: 30000 }
+  },
+  2024: {
+    single: [
+      { min: 0, max: 11600, rate: 0.10 },
+      { min: 11600, max: 47150, rate: 0.12 },
+      { min: 47150, max: 100525, rate: 0.22 },
+      { min: 100525, max: 191950, rate: 0.24 },
+      { min: 191950, max: 243725, rate: 0.32 },
+      { min: 243725, max: 609350, rate: 0.35 },
+      { min: 609350, max: Infinity, rate: 0.37 }
+    ],
+    married: [
+      { min: 0, max: 23200, rate: 0.10 },
+      { min: 23200, max: 94300, rate: 0.12 },
+      { min: 94300, max: 201050, rate: 0.22 },
+      { min: 201050, max: 383900, rate: 0.24 },
+      { min: 383900, max: 487450, rate: 0.32 },
+      { min: 487450, max: 731200, rate: 0.35 },
+      { min: 731200, max: Infinity, rate: 0.37 }
+    ],
+    socialSecurityWageBase: 168600,
+    standardDeduction: { single: 14600, married: 29200 }
+  }
 };
 
+const usStateTaxRates = { 
+  CA: 0.093, TX: 0, NY: 0.085, FL: 0, WA: 0, AZ: 0.025,
+  IL: 0.0495, PA: 0.0307, OH: 0.04, GA: 0.0549
+};
+
+function getUSTaxBrackets(year) {
+  if (taxData && taxData.us && taxData.us[year]) {
+    return taxData.us[year];
+  }
+  return usTaxBrackets[year] || usTaxBrackets['2025'];
+}
+
 function calculateUSTax() {
-    const grossIncome = parseFloat(document.getElementById('us-gross-income').value) || 0;
-    const filingStatus = document.getElementById('us-filing-status').value;
-    const state = document.getElementById('us-state').value;
-    
-    const brackets = usTaxBrackets2024[filingStatus];
-    
-    let federalTax = 0;
-    let remaining = grossIncome;
-    
-    for (const bracket of brackets) {
-        if (remaining <= 0) break;
-        const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
-        federalTax += taxableInBracket * bracket.rate;
-        remaining -= taxableInBracket;
-    }
-    
-    // Simplified state tax
-    const stateTaxRates = { CA: 0.093, TX: 0, NY: 0.085, FL: 0, WA: 0, AZ: 0.025 };
-    const stateTax = grossIncome * (stateTaxRates[state] || 0.05);
-    
-    // FICA
-    const socialSecurity = Math.min(grossIncome, 168600) * 0.062;
-    const medicare = grossIncome * 0.0145;
-    
-    const totalTax = federalTax + stateTax + socialSecurity + medicare;
-    const netIncome = grossIncome - totalTax;
+  const grossIncome = parseFloat(document.getElementById('us-gross-income').value) || 0;
+  const filingStatus = document.getElementById('us-filing-status').value;
+  const state = document.getElementById('us-state').value;
+
+  const yearData = getUSTaxBrackets('2025');
+  const brackets = yearData[filingStatus];
+  const ssWageBase = yearData.socialSecurityWageBase || 176100;
+
+  let federalTax = 0;
+  let remaining = grossIncome;
+
+  for (const bracket of brackets) {
+    if (remaining <= 0) break;
+    const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
+    federalTax += taxableInBracket * bracket.rate;
+    remaining -= taxableInBracket;
+  }
+
+  const stateTax = grossIncome * (usStateTaxRates[state] || 0.05);
+
+  const socialSecurity = Math.min(grossIncome, ssWageBase) * 0.062;
+  const medicare = grossIncome * 0.0145;
+
+  const totalTax = federalTax + stateTax + socialSecurity + medicare;
+  const netIncome = grossIncome - totalTax;
     
     document.getElementById('us-tax-results').innerHTML = `
         <div class="results-grid">
@@ -1199,26 +1298,23 @@ function calculateUSTax() {
 // ==========================================
 
 function calculateUSSelfEmployed() {
-    const profit = parseFloat(document.getElementById('us-se-profit').value) || 0;
-    const filingStatus = document.getElementById('us-se-filing').value;
-    
-    // Self-employment tax (Social Security + Medicare, both halves)
-    const seTax = profit * 0.9235 * 0.153;
-    
-    // Deduct half of SE tax
-    const taxableIncome = profit - (seTax / 2);
-    
-    // Federal income tax
-    const brackets = usTaxBrackets2024[filingStatus];
-    let federalTax = 0;
-    let remaining = taxableIncome;
-    
-    for (const bracket of brackets) {
-        if (remaining <= 0) break;
-        const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
-        federalTax += taxableInBracket * bracket.rate;
-        remaining -= taxableInBracket;
-    }
+  const profit = parseFloat(document.getElementById('us-se-profit').value) || 0;
+  const filingStatus = document.getElementById('us-se-filing').value;
+
+  const seTax = profit * 0.9235 * 0.153;
+  const taxableIncome = profit - (seTax / 2);
+
+  const yearData = getUSTaxBrackets('2025');
+  const brackets = yearData[filingStatus];
+  let federalTax = 0;
+  let remaining = taxableIncome;
+
+  for (const bracket of brackets) {
+    if (remaining <= 0) break;
+    const taxableInBracket = Math.min(remaining, bracket.max - bracket.min);
+    federalTax += taxableInBracket * bracket.rate;
+    remaining -= taxableInBracket;
+  }
     
     const totalTax = federalTax + seTax;
     const netProfit = profit - totalTax;
@@ -1246,28 +1342,28 @@ function calculateUSSelfEmployed() {
 // ==========================================
 
 function calculateUSCapitalGains() {
-    const gain = parseFloat(document.getElementById('us-cg-gain').value) || 0;
-    const income = parseFloat(document.getElementById('us-cg-income').value) || 0;
-    const filingStatus = document.getElementById('us-cg-filing').value;
-    
-    const thresholds = filingStatus === 'married' 
-        ? [0, 94050, 583750, Infinity]
-        : [0, 47025, 518900, Infinity];
-    
-    const rates = [0, 0.15, 0.20];
-    
-    let tax = 0;
-    let remaining = gain;
-    
-    for (let i = 0; i < thresholds.length - 1; i++) {
-        if (remaining <= 0) break;
-        const bracketSpace = thresholds[i + 1] - (thresholds[i] + income);
-        if (bracketSpace > 0) {
-            const taxableInBracket = Math.min(remaining, bracketSpace);
-            tax += taxableInBracket * rates[i];
-            remaining -= taxableInBracket;
-        }
+  const gain = parseFloat(document.getElementById('us-cg-gain').value) || 0;
+  const income = parseFloat(document.getElementById('us-cg-income').value) || 0;
+  const filingStatus = document.getElementById('us-cg-filing').value;
+
+  const yearData = getUSTaxBrackets('2025');
+  const cgBrackets = yearData.capitalGains?.[filingStatus] || 
+    (filingStatus === 'married' 
+      ? [{min: 0, max: 96700, rate: 0}, {min: 96700, max: 600050, rate: 0.15}, {min: 600050, max: Infinity, rate: 0.20}]
+      : [{min: 0, max: 48350, rate: 0}, {min: 48350, max: 533400, rate: 0.15}, {min: 533400, max: Infinity, rate: 0.20}]);
+
+  let tax = 0;
+  let remaining = gain;
+
+  for (const bracket of cgBrackets) {
+    if (remaining <= 0) break;
+    const bracketSpace = bracket.max === Infinity ? Infinity : bracket.max - Math.max(income, bracket.min);
+    if (bracketSpace > 0) {
+      const taxableInBracket = Math.min(remaining, bracketSpace);
+      tax += taxableInBracket * bracket.rate;
+      remaining -= taxableInBracket;
     }
+  }
     
     document.getElementById('us-cg-results').innerHTML = `
         <div class="results-grid">
