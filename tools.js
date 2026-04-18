@@ -1770,7 +1770,996 @@ function calculateCashFlow() {
                 <div class="label">12-Month Total</div>
                 <div class="value">£${formatCurrency(netMonthly * 12)}</div>
             </div>
-        </div>
-        ${html}
+      </div>
+      ${html}
     `;
+}
+
+// ==========================================
+// HISTORICAL EXCHANGE RATES
+// ==========================================
+
+const historicalRates = {
+  2024: { GBP_USD: 1.27, GBP_EUR: 1.16, EUR_USD: 1.09 },
+  2023: { GBP_USD: 1.23, GBP_EUR: 1.14, EUR_USD: 1.08 },
+  2022: { GBP_USD: 1.21, GBP_EUR: 1.17, EUR_USD: 1.05 },
+  2021: { GBP_USD: 1.38, GBP_EUR: 1.16, EUR_USD: 1.18 },
+  2020: { GBP_USD: 1.28, GBP_EUR: 1.12, EUR_USD: 1.14 },
+  2019: { GBP_USD: 1.28, GBP_EUR: 1.12, EUR_USD: 1.12 },
+  2018: { GBP_USD: 1.33, GBP_EUR: 1.13, EUR_USD: 1.18 },
+  2017: { GBP_USD: 1.30, GBP_EUR: 1.12, EUR_USD: 1.16 },
+  2016: { GBP_USD: 1.32, GBP_EUR: 1.23, EUR_USD: 1.08 },
+  2015: { GBP_USD: 1.53, GBP_EUR: 1.38, EUR_USD: 1.11 },
+  2014: { GBP_USD: 1.65, GBP_EUR: 1.24, EUR_USD: 1.33 },
+  2010: { GBP_USD: 1.55, GBP_EUR: 1.16, EUR_USD: 1.33 },
+  2005: { GBP_USD: 1.82, GBP_EUR: 1.47, EUR_USD: 1.24 },
+  2000: { GBP_USD: 1.52, GBP_EUR: 1.64, EUR_USD: 0.93 },
+  1995: { GBP_USD: 1.54, GBP_EUR: 1.35, EUR_USD: 1.14 }
+};
+
+function lookupHistoricalRate() {
+  const year = document.getElementById('hist-year').value;
+  const from = document.getElementById('hist-from').value;
+  const to = document.getElementById('hist-to').value;
+  const amount = parseFloat(document.getElementById('hist-amount').value) || 1;
+
+  const rates = historicalRates[year];
+  if (!rates) {
+    document.getElementById('hist-results').innerHTML = '<p style="color: var(--error);">No data available for selected year.</p>';
+    return;
+  }
+
+  const key = `${from}_${to}`;
+  const reverseKey = `${to}_${from}`;
+  
+  let rate, result;
+  if (from === to) {
+    rate = 1;
+    result = amount;
+  } else if (rates[key]) {
+    rate = rates[key];
+    result = amount * rate;
+  } else if (rates[reverseKey]) {
+    rate = 1 / rates[reverseKey];
+    result = amount * rate;
+  } else if (from === 'GBP' || to === 'GBP') {
+    const usdKey = from === 'GBP' ? `GBP_USD` : `USD_GBP`;
+    const eurKey = from === 'GBP' ? `GBP_EUR` : `EUR_GBP`;
+    if (rates[usdKey] && (to === 'USD' || from === 'USD')) {
+      rate = to === 'USD' ? rates.GBP_USD : 1/rates.GBP_USD;
+      result = amount * rate;
+    } else if (rates[eurKey] && (to === 'EUR' || from === 'EUR')) {
+      rate = to === 'EUR' ? rates.GBP_EUR : 1/rates.GBP_EUR;
+      result = amount * rate;
+    } else {
+      document.getElementById('hist-results').innerHTML = '<p style="color: var(--error);">Rate combination not available.</p>';
+      return;
+    }
+  } else {
+    const usdTo = rates[`USD_${to}`] || (rates[`${to}_USD`] ? 1/rates[`${to}_USD`] : null);
+    const usdFrom = rates[`USD_${from}`] || (rates[`${from}_USD`] ? 1/rates[`${from}_USD`] : null);
+    if (usdTo && usdFrom) {
+      rate = usdTo / usdFrom;
+      result = amount * rate;
+    } else {
+      document.getElementById('hist-results').innerHTML = '<p style="color: var(--error);">Rate not available.</p>';
+      return;
+    }
+  }
+
+  document.getElementById('hist-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">${amount} ${from} in ${year}</div>
+        <div class="value">${result.toFixed(2)} ${to}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Exchange Rate</div>
+        <div class="value">1 ${from} = ${rate.toFixed(4)} ${to}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ==========================================
+// IR35 CALCULATOR
+// ==========================================
+
+function calculateIR35() {
+  const dayRate = parseFloat(document.getElementById('ir35-rate').value) || 0;
+  const days = parseInt(document.getElementById('ir35-days').value) || 220;
+  const expenses = parseFloat(document.getElementById('ir35-expenses').value) || 0;
+
+  const grossIncome = dayRate * days;
+  const insideExpenses = Math.min(expenses, grossIncome * 0.05);
+
+  // Inside IR35 (deemed employment)
+  const insideSalary = grossIncome - insideExpenses;
+  const insideTax = calculateSimpleUKTax(insideSalary);
+  const insideNet = insideSalary - insideTax.total - insideExpenses;
+
+  // Outside IR35 (dividend route)
+  const outsideSalary = Math.min(12570, grossIncome * 0.3);
+  const outsideCorpProfit = grossIncome - outsideSalary - expenses;
+  const corpTax = outsideCorpProfit * 0.25;
+  const outsideDividends = outsideCorpProfit - corpTax;
+  const outsideDivTax = calculateDividendTax(outsideDividends, outsideSalary);
+  const outsideNet = outsideSalary - calculateSimpleUKTax(outsideSalary).total + outsideDividends - outsideDivTax - expenses;
+
+  document.getElementById('ir35-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight" style="background: linear-gradient(135deg, var(--success), #1e8449)">
+        <div class="label">Outside IR35 Net</div>
+        <div class="value">£${formatCurrency(outsideNet)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Inside IR35 Net</div>
+        <div class="value">£${formatCurrency(insideNet)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Difference</div>
+        <div class="value">£${formatCurrency(outsideNet - insideNet)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Gross Income</div>
+        <div class="value">£${formatCurrency(grossIncome)}</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Outside IR35 assumes salary + dividend extraction. Consult an accountant for accurate advice.
+    </p>
+  `;
+}
+
+function calculateSimpleUKTax(income) {
+  const personalAllowance = 12570;
+  const taxableIncome = Math.max(0, income - personalAllowance);
+  
+  let tax = 0;
+  if (taxableIncome > 0) {
+    const basic = Math.min(taxableIncome, 37700);
+    tax += basic * 0.20;
+  }
+  if (taxableIncome > 37700) {
+    const higher = Math.min(taxableIncome - 37700, 74900);
+    tax += higher * 0.40;
+  }
+  if (taxableIncome > 112700) {
+    tax += (taxableIncome - 112700) * 0.45;
+  }
+  
+  return { tax, total: tax };
+}
+
+function calculateDividendTax(dividends, otherIncome) {
+  const allowance = 500;
+  const basicRemaining = Math.max(0, 50270 - otherIncome);
+  
+  let tax = 0;
+  const taxable = Math.max(0, dividends - allowance);
+  
+  if (taxable > 0) {
+    const basic = Math.min(taxable, basicRemaining);
+    tax += basic * 0.0875;
+    if (taxable > basicRemaining) {
+      tax += (taxable - basicRemaining) * 0.3375;
+    }
+  }
+  
+  return tax;
+}
+
+// ==========================================
+// REMOTE SALARY ADJUSTER
+// ==========================================
+
+const colIndices = {
+  'London': 100, 'Manchester': 75, 'Birmingham': 73, 'Edinburgh': 85,
+  'Bristol': 82, 'Leeds': 70, 'Glasgow': 72, 'Liverpool': 68,
+  'New York': 135, 'San Francisco': 150, 'Seattle': 115, 'Austin': 95,
+  'Berlin': 80, 'Amsterdam': 90, 'Paris': 95, 'Barcelona': 70,
+  'Tokyo': 95, 'Singapore': 110, 'Sydney': 100, 'Dubai': 85
+};
+
+function calculateRemoteSalary() {
+  const currentSalary = parseFloat(document.getElementById('remote-current').value) || 0;
+  const currentCity = document.getElementById('remote-current-city').value;
+  const newCity = document.getElementById('remote-new-city').value;
+
+  const currentIndex = colIndices[currentCity] || 100;
+  const newIndex = colIndices[newCity] || 100;
+
+  const adjustedSalary = currentSalary * (newIndex / currentIndex);
+  const difference = adjustedSalary - currentSalary;
+
+  document.getElementById('remote-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Adjusted Salary</div>
+        <div class="value">£${formatCurrency(adjustedSalary)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Current Salary</div>
+        <div class="value">£${formatCurrency(currentSalary)}</div>
+      </div>
+      <div class="result-item" style="color: ${difference >= 0 ? 'var(--success)' : 'var(--error)'}">
+        <div class="label">Difference</div>
+        <div class="value">${difference >= 0 ? '+' : ''}£${formatCurrency(Math.abs(difference))}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">${currentCity} Index</div>
+        <div class="value">${currentIndex}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">${newCity} Index</div>
+        <div class="value">${newIndex}</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Cost of living indices are approximate. Negotiate based on your specific skills and market rates.
+    </p>
+  `;
+}
+
+// ==========================================
+// PAYCHECK CALCULATOR
+// ==========================================
+
+function calculatePaycheck() {
+  const salary = parseFloat(document.getElementById('pay-salary').value) || 0;
+  const frequency = document.getElementById('pay-frequency').value;
+  const pension = parseFloat(document.getElementById('pay-pension').value) || 0;
+  const studentLoan = document.getElementById('pay-student-loan').value;
+
+  const annualTax = calculateDetailedUKTax(salary, pension, studentLoan);
+  
+  const periods = frequency === 'monthly' ? 12 : frequency === 'weekly' ? 52 : 26;
+  const grossPerPeriod = salary / periods;
+  const netPerPeriod = annualTax.net / periods;
+  const taxPerPeriod = annualTax.incomeTax / periods;
+  const niPerPeriod = annualTax.ni / periods;
+  const pensionPerPeriod = annualTax.pension / periods;
+  const studentLoanPerPeriod = annualTax.studentLoan / periods;
+
+  document.getElementById('pay-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Net ${frequency === 'monthly' ? 'Monthly' : frequency === 'weekly' ? 'Weekly' : 'Bi-weekly'}</div>
+        <div class="value">£${formatCurrency(netPerPeriod)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Gross per Period</div>
+        <div class="value">£${formatCurrency(grossPerPeriod)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Income Tax</div>
+        <div class="value">-£${formatCurrency(taxPerPeriod)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">National Insurance</div>
+        <div class="value">-£${formatCurrency(niPerPeriod)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Pension</div>
+        <div class="value">-£${formatCurrency(pensionPerPeriod)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Student Loan</div>
+        <div class="value">-£${formatCurrency(studentLoanPerPeriod)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function calculateDetailedUKTax(gross, pensionPercent, studentLoan) {
+  const pension = gross * (pensionPercent / 100);
+  const taxableIncome = gross - pension;
+
+  let personalAllowance = 12570;
+  if (taxableIncome > 100000) {
+    personalAllowance = Math.max(0, personalAllowance - (taxableIncome - 100000) / 2);
+  }
+
+  const basicBand = 50270 - personalAllowance;
+  let incomeTax = 0;
+  let taxable = taxableIncome;
+
+  const taxFree = Math.min(taxable, personalAllowance);
+  taxable -= taxFree;
+
+  const basicAmount = Math.min(taxable, basicBand);
+  incomeTax += basicAmount * 0.20;
+  taxable -= basicAmount;
+
+  const higherAmount = Math.min(taxable, 125140 - 50270);
+  incomeTax += higherAmount * 0.40;
+  taxable -= higherAmount;
+
+  incomeTax += Math.max(0, taxable) * 0.45;
+
+  let ni = 0;
+  if (gross > 12570) {
+    ni += Math.min(gross - 12570, 37700) * 0.08;
+    if (gross > 50270) {
+      ni += (gross - 50270) * 0.02;
+    }
+  }
+
+  let studentLoanAmount = 0;
+  const thresholds = { plan1: 26100, plan2: 27295, plan4: 32185, plan5: 25000, postgrad: 21000 };
+  const rates = { plan1: 0.09, plan2: 0.09, plan4: 0.09, plan5: 0.09, postgrad: 0.06 };
+  
+  if (studentLoan !== 'none' && thresholds[studentLoan]) {
+    const threshold = thresholds[studentLoan];
+    const rate = rates[studentLoan];
+    studentLoanAmount = Math.max(0, gross - threshold) * rate;
+  }
+
+  const totalDeductions = incomeTax + ni + pension + studentLoanAmount;
+  const net = gross - totalDeductions;
+
+  return { incomeTax, ni, pension, studentLoan: studentLoanAmount, totalDeductions, net };
+}
+
+// ==========================================
+// CONTRACTOR RATE CALCULATOR
+// ==========================================
+
+function calculateContractorRate() {
+  const permSalary = parseFloat(document.getElementById('contract-perm').value) || 0;
+  const days = parseInt(document.getElementById('contract-days').value) || 220;
+  const insideIR35 = document.getElementById('contract-ir35').value === 'inside';
+
+  const grossPerm = permSalary;
+  const permTax = calculateDetailedUKTax(grossPerm, 5, 'none');
+  const permNet = permTax.net;
+
+  const insideDivisor = insideIR35 ? 1.3 : 1.5;
+  const equivalentDayRate = permSalary / days * insideDivisor;
+  const roundedDayRate = Math.ceil(equivalentDayRate / 25) * 25;
+
+  const grossContract = roundedDayRate * days;
+  const contractTax = calculateDetailedUKTax(grossContract, 0, 'none');
+  const contractNet = contractTax.net;
+
+  document.getElementById('contract-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Equivalent Day Rate</div>
+        <div class="value">£${roundedDayRate}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Permanent Net</div>
+        <div class="value">£${formatCurrency(permNet)}/yr</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Contract Net (est.)</div>
+        <div class="value">£${formatCurrency(contractNet)}/yr</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Working Days</div>
+        <div class="value">${days}/year</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Day rate multiplier: ${insideIR35 ? '1.3x (Inside IR35)' : '1.5x (Outside IR35)'}. 
+      Adjust based on market rates and skills.
+    </p>
+  `;
+}
+
+// ==========================================
+// DEBT PAYOFF STRATEGY
+// ==========================================
+
+function calculateDebtPayoff() {
+  const debts = [];
+  const debtInputs = document.querySelectorAll('.debt-entry');
+  debtInputs.forEach((entry, i) => {
+    const balance = parseFloat(entry.querySelector('.debt-balance').value) || 0;
+    const rate = parseFloat(entry.querySelector('.debt-rate').value) || 0;
+    const minPayment = parseFloat(entry.querySelector('.debt-min').value) || 0;
+    if (balance > 0) {
+      debts.push({ balance, rate, minPayment, name: `Debt ${i + 1}` });
+    }
+  });
+
+  const monthlyPayment = parseFloat(document.getElementById('debt-monthly').value) || 0;
+  const strategy = document.getElementById('debt-strategy').value;
+
+  if (debts.length === 0 || monthlyPayment === 0) {
+    document.getElementById('debt-results').innerHTML = '<p style="color: var(--error);">Please enter your debts and monthly payment.</p>';
+    return;
+  }
+
+  const minTotal = debts.reduce((sum, d) => sum + d.minPayment, 0);
+  if (monthlyPayment < minTotal) {
+    document.getElementById('debt-results').innerHTML = `<p style="color: var(--error);">Monthly payment must be at least £${minTotal.toFixed(2)} to cover minimums.</p>`;
+    return;
+  }
+
+  const extraPayment = monthlyPayment - minTotal;
+
+  const result = simulateDebtPayoff(debts, strategy, monthlyPayment, extraPayment);
+  const oppositeResult = simulateDebtPayoff([...debts], strategy === 'avalanche' ? 'snowball' : 'avalanche', monthlyPayment, extraPayment);
+
+  document.getElementById('debt-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">${strategy === 'avalanche' ? 'Avalanche' : 'Snowball'} Method</div>
+        <div class="value">${result.months} months</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Total Interest</div>
+        <div class="value">£${formatCurrency(result.interest)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">${strategy === 'avalanche' ? 'Snowball' : 'Avalanche'} Alternative</div>
+        <div class="value">${oppositeResult.months} months</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Alternative Interest</div>
+        <div class="value">£${formatCurrency(oppositeResult.interest)}</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      ${strategy === 'avalanche' ? 'Avalanche pays highest interest first (saves money). Snowball pays smallest first (motivation).' : 'Snowball pays smallest first (quick wins). Avalanche pays highest interest first (saves money).'}
+    </p>
+  `;
+}
+
+function simulateDebtPayoff(debts, strategy, monthlyPayment, extraPayment) {
+  debts = debts.map(d => ({ ...d }));
+  
+  if (strategy === 'avalanche') {
+    debts.sort((a, b) => b.rate - a.rate);
+  } else {
+    debts.sort((a, b) => a.balance - b.balance);
+  }
+
+  let months = 0;
+  let totalInterest = 0;
+
+  while (debts.some(d => d.balance > 0) && months < 600) {
+    months++;
+    let remaining = extraPayment;
+
+    debts.forEach(d => {
+      if (d.balance > 0) {
+        const interest = d.balance * (d.rate / 100 / 12);
+        totalInterest += interest;
+        d.balance += interest;
+
+        d.balance -= d.minPayment;
+        remaining -= d.minPayment;
+      }
+    });
+
+    while (remaining > 0) {
+      const unpaid = debts.find(d => d.balance > 0);
+      if (!unpaid) break;
+      const payment = Math.min(remaining, unpaid.balance);
+      unpaid.balance -= payment;
+      remaining -= payment;
+    }
+  }
+
+  return { months, interest: totalInterest };
+}
+
+function addDebtEntry() {
+  const container = document.getElementById('debt-entries');
+  const count = container.querySelectorAll('.debt-entry').length + 1;
+  const entry = document.createElement('div');
+  entry.className = 'debt-entry';
+  entry.innerHTML = `
+    <div class="input-grid" style="grid-template-columns: 2fr 1fr 1fr; gap: 10px;">
+      <div class="input-group">
+        <input type="number" class="debt-balance" placeholder="Balance £" value="5000">
+      </div>
+      <div class="input-group">
+        <input type="number" class="debt-rate" placeholder="APR %" value="18" step="0.1">
+      </div>
+      <div class="input-group">
+        <input type="number" class="debt-min" placeholder="Min £" value="100">
+      </div>
+    </div>
+  `;
+  container.appendChild(entry);
+}
+
+// ==========================================
+// DTI CALCULATOR
+// ==========================================
+
+function calculateDTI() {
+  const grossIncome = parseFloat(document.getElementById('dti-income').value) || 0;
+  const mortgage = parseFloat(document.getElementById('dti-mortgage').value) || 0;
+  const carLoan = parseFloat(document.getElementById('dti-car').value) || 0;
+  const creditCards = parseFloat(document.getElementById('dti-credit').value) || 0;
+  const otherDebts = parseFloat(document.getElementById('dti-other').value) || 0;
+  const rent = parseFloat(document.getElementById('dti-rent').value) || 0;
+
+  const monthlyIncome = grossIncome / 12;
+  const housingPayment = mortgage || rent;
+  const totalDebts = housingPayment + carLoan + creditCards + otherDebts;
+  const dti = (totalDebts / monthlyIncome) * 100;
+  const housingDTI = (housingPayment / monthlyIncome) * 100;
+
+  let rating, ratingColor;
+  if (dti <= 35) {
+    rating = 'Good';
+    ratingColor = 'var(--success)';
+  } else if (dti <= 43) {
+    rating = 'Fair';
+    ratingColor = '#f39c12';
+  } else if (dti <= 50) {
+    rating = 'High';
+    ratingColor = '#e67e22';
+  } else {
+    rating = 'Poor';
+    ratingColor = 'var(--error)';
+  }
+
+  document.getElementById('dti-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight" style="background: ${ratingColor}">
+        <div class="label">DTI Ratio</div>
+        <div class="value">${dti.toFixed(1)}% - ${rating}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Housing DTI</div>
+        <div class="value">${housingDTI.toFixed(1)}%</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Total Monthly Debts</div>
+        <div class="value">£${formatCurrency(totalDebts)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Monthly Income</div>
+        <div class="value">£${formatCurrency(monthlyIncome)}</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Lenders typically prefer DTI below 43%. Ideal is below 36%.
+    </p>
+  `;
+}
+
+// ==========================================
+// BNPL COMPARISON
+// ==========================================
+
+const bnplProviders = [
+  { name: 'Klarna', feeAfterWeeks: 6, feePercent: 0, lateFee: 7 },
+  { name: 'Clearpay', feeAfterWeeks: 2, feePercent: 0, lateFee: 6 },
+  { name: 'Laybuy', feeAfterWeeks: 1, feePercent: 0, lateFee: 10 },
+  { name: 'PayPal Pay in 3', feeAfterWeeks: 3, feePercent: 0, lateFee: 12 }
+];
+
+function calculateBNPL() {
+  const amount = parseFloat(document.getElementById('bnpl-amount').value) || 0;
+  const weeks = parseInt(document.getElementById('bnpl-weeks').value) || 6;
+
+  let html = '<div class="tax-breakdown"><h4>Comparison</h4>';
+  
+  bnplProviders.forEach(provider => {
+    const missed = Math.max(0, weeks - provider.feeAfterWeeks);
+    const lateFees = missed * provider.lateFee;
+    const percentFees = amount * (provider.feePercent / 100);
+    const totalCost = amount + lateFees + percentFees;
+    
+    html += `
+      <div class="tax-row" style="padding: 10px; margin: 5px 0; background: var(--bg-card); border-radius: 8px;">
+        <span class="label" style="font-weight: bold;">${provider.name}</span>
+        <span class="amount">£${formatCurrency(totalCost)}</span>
+      </div>
+      <div style="font-size: 11px; color: var(--text-secondary); margin-left: 10px; margin-bottom: 10px;">
+        ${missed > 0 ? `${missed} late payments × £${provider.lateFee} = £${lateFees}` : 'No late fees'}
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  html += `<p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+    Late fees shown for ${weeks} week repayment. Pay on time = 0% interest.
+  </p>`;
+
+  document.getElementById('bnpl-results').innerHTML = html;
+}
+
+// ==========================================
+// APR CALCULATOR
+// ==========================================
+
+function calculateAPR() {
+  const loanAmount = parseFloat(document.getElementById('apr-amount').value) || 0;
+  const interestRate = parseFloat(document.getElementById('apr-rate').value) || 0;
+  const fees = parseFloat(document.getElementById('apr-fees').value) || 0;
+  const termMonths = parseInt(document.getElementById('apr-term').value) || 12;
+
+  const monthlyRate = interestRate / 100 / 12;
+  const totalWithFees = loanAmount + fees;
+
+  let monthlyPayment;
+  if (monthlyRate === 0) {
+    monthlyPayment = totalWithFees / termMonths;
+  } else {
+    monthlyPayment = totalWithFees * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1);
+  }
+
+  const totalRepaid = monthlyPayment * termMonths;
+  
+  const apr = calculateAPRRate(loanAmount, monthlyPayment, termMonths);
+
+  document.getElementById('apr-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">APR</div>
+        <div class="value">${apr.toFixed(2)}%</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Monthly Payment</div>
+        <div class="value">£${formatCurrency(monthlyPayment)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Total Repaid</div>
+        <div class="value">£${formatCurrency(totalRepaid)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Interest Rate</div>
+        <div class="value">${interestRate}%</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      APR includes fees and shows the true cost of borrowing.
+    </p>
+  `;
+}
+
+function calculateAPRRate(principal, payment, months) {
+  let low = 0, high = 100;
+  for (let i = 0; i < 100; i++) {
+    const mid = (low + high) / 2;
+    const rate = mid / 100 / 12;
+    const pv = payment * (1 - Math.pow(1 + rate, -months)) / rate;
+    if (pv > principal) {
+      low = mid;
+    } else {
+      high = mid;
+    }
+  }
+  return (low + high) / 2;
+}
+
+// ==========================================
+// PERSONAL INFLATION RATE
+// ==========================================
+
+function calculatePersonalInflation() {
+  const categories = [
+    { name: 'Housing', weight: 0.28, input: 'inf-housing' },
+    { name: 'Transport', weight: 0.14, input: 'inf-transport' },
+    { name: 'Food', weight: 0.12, input: 'inf-food' },
+    { name: 'Utilities', weight: 0.08, input: 'inf-utilities' },
+    { name: 'Healthcare', weight: 0.04, input: 'inf-health' },
+    { name: 'Entertainment', weight: 0.06, input: 'inf-entertainment' },
+    { name: 'Other', weight: 0.28, input: 'inf-other' }
+  ];
+
+  let personalRate = 0;
+  let html = '<div class="tax-breakdown"><h4>Your Spending Breakdown</h4>';
+
+  categories.forEach(cat => {
+    const spend = parseFloat(document.getElementById(cat.input).value) || 0;
+    const weight = cat.weight * 100;
+    const contribution = spend * weight / 100;
+    personalRate += contribution;
+    
+    html += `
+      <div class="tax-row">
+        <span class="label">${cat.name} (${weight.toFixed(0)}%)</span>
+        <span class="amount">${spend.toFixed(1)}%</span>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+
+  const officialRate = 3.2;
+  const difference = personalRate - officialRate;
+
+  document.getElementById('pinf-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Your Personal Inflation</div>
+        <div class="value">${personalRate.toFixed(1)}%</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Official CPI</div>
+        <div class="value">${officialRate}%</div>
+      </div>
+      <div class="result-item" style="color: ${difference > 0 ? 'var(--error)' : 'var(--success)'}">
+        <div class="label">Difference</div>
+        <div class="value">${difference > 0 ? '+' : ''}${difference.toFixed(1)}%</div>
+      </div>
+    </div>
+    ${html}
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Enter your annual spending increase % for each category.
+    </p>
+  `;
+}
+
+// ==========================================
+// PENSION CALCULATOR (UK)
+// ==========================================
+
+function calculatePension() {
+  const age = parseInt(document.getElementById('pen-age').value) || 30;
+  const currentPot = parseFloat(document.getElementById('pen-pot').value) || 0;
+  const monthlyContrib = parseFloat(document.getElementById('pen-monthly').value) || 0;
+  const employerContrib = parseFloat(document.getElementById('pen-employer').value) || 0;
+  const salary = parseFloat(document.getElementById('pen-salary').value) || 0;
+  const growthRate = parseFloat(document.getElementById('pen-growth').value) || 5;
+
+  const retirementAge = 68;
+  const yearsToRetire = retirementAge - age;
+  const monthlyRate = growthRate / 100 / 12;
+  const totalMonthly = monthlyContrib + employerContrib;
+
+  let futurePot = currentPot * Math.pow(1 + monthlyRate, yearsToRetire * 12);
+  if (monthlyRate > 0) {
+    futurePot += totalMonthly * ((Math.pow(1 + monthlyRate, yearsToRetire * 12) - 1) / monthlyRate);
+  } else {
+    futurePot += totalMonthly * yearsToRetire * 12;
+  }
+
+  const taxFreeLump = futurePot * 0.25;
+  const remainingPot = futurePot - taxFreeLump;
+  const annualIncome = remainingPot * 0.04;
+
+  const annualAllowance = 60000;
+  const totalAnnualContrib = (monthlyContrib + employerContrib) * 12;
+  const allowanceUsed = (totalAnnualContrib / annualAllowance * 100).toFixed(1);
+
+  document.getElementById('pen-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Projected Pot at ${retirementAge}</div>
+        <div class="value">£${formatCurrency(futurePot)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Tax-Free Lump Sum (25%)</div>
+        <div class="value">£${formatCurrency(taxFreeLump)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Safe Withdrawal (4%/yr)</div>
+        <div class="value">£${formatCurrency(annualIncome)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Years to Retirement</div>
+        <div class="value">${yearsToRetire}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Annual Allowance Used</div>
+        <div class="value">${allowanceUsed}%</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Annual allowance: £60,000. Lifetime allowance abolished from April 2024.
+    </p>
+  `;
+}
+
+// ==========================================
+// 401K CALCULATOR
+// ==========================================
+
+function calculate401k() {
+  const age = parseInt(document.getElementById('401k-age').value) || 30;
+  const currentBalance = parseFloat(document.getElementById('401k-balance').value) || 0;
+  const salary = parseFloat(document.getElementById('401k-salary').value) || 0;
+  const contribution = parseFloat(document.getElementById('401k-contrib').value) || 0;
+  const employerMatch = parseFloat(document.getElementById('401k-match').value) || 0;
+  const employerLimit = parseFloat(document.getElementById('401k-limit').value) || 6;
+  const growthRate = parseFloat(document.getElementById('401k-growth').value) || 7;
+
+  const yearData = getUSTaxBrackets('2025');
+  const contributionLimit = 23500;
+  const catchUp = age >= 50 ? 7500 : 0;
+  const maxContrib = contributionLimit + catchUp;
+
+  const yourContrib = Math.min(salary * (contribution / 100), maxContrib);
+  const employerContribAmount = Math.min(salary * (employerMatch / 100), salary * (employerLimit / 100));
+
+  const retirementAge = 65;
+  const yearsToRetire = retirementAge - age;
+  const monthlyRate = growthRate / 100 / 12;
+  const totalAnnual = yourContrib + employerContribAmount;
+
+  let futureValue = currentBalance * Math.pow(1 + monthlyRate, yearsToRetire * 12);
+  if (monthlyRate > 0) {
+    futureValue += totalAnnual * ((Math.pow(1 + growthRate / 100, yearsToRetire) - 1) / (growthRate / 100));
+  } else {
+    futureValue += totalAnnual * yearsToRetire;
+  }
+
+  document.getElementById('401k-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Projected 401k at ${retirementAge}</div>
+        <div class="value">$${formatCurrency(futureValue)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Your Annual Contribution</div>
+        <div class="value">$${formatCurrency(yourContrib)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Employer Match</div>
+        <div class="value">$${formatCurrency(employerContribAmount)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Total Annual</div>
+        <div class="value">$${formatCurrency(totalAnnual)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Contribution Limit</div>
+        <div class="value">$${maxContrib.toLocaleString()}</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      2025 limit: $23,500 ($31,000 if 50+). Always contribute at least the employer match.
+    </p>
+  `;
+}
+
+// ==========================================
+// SOCIAL SECURITY ESTIMATOR
+// ==========================================
+
+function calculateSocialSecurity() {
+  const currentAge = parseInt(document.getElementById('ss-age').value) || 35;
+  const averageEarnings = parseFloat(document.getElementById('ss-earnings').value) || 0;
+  const retirementAge = parseInt(document.getElementById('ss-retire-age').value) || 67;
+  const workYears = parseInt(document.getElementById('ss-years').value) || 35;
+
+  const fullRetirementAge = 67;
+  const bendPoint1 = 1174;
+  const bendPoint2 = 7078;
+
+  const aime = averageEarnings;
+  let pia = 0;
+  
+  if (aime <= bendPoint1) {
+    pia = aime * 0.90;
+  } else if (aime <= bendPoint2) {
+    pia = bendPoint1 * 0.90 + (aime - bendPoint1) * 0.32;
+  } else {
+    pia = bendPoint1 * 0.90 + (bendPoint2 - bendPoint1) * 0.32 + (aime - bendPoint2) * 0.15;
+  }
+
+  const maxBenefit = 3822;
+  pia = Math.min(pia, maxBenefit);
+
+  let adjustment = 0;
+  if (retirementAge < fullRetirementAge) {
+    const monthsEarly = (fullRetirementAge - retirementAge) * 12;
+    if (monthsEarly <= 36) {
+      adjustment = -0.0056 * monthsEarly;
+    } else {
+      adjustment = -0.0056 * 36 - 0.0042 * (monthsEarly - 36);
+    }
+  } else if (retirementAge > fullRetirementAge) {
+    const monthsLate = (retirementAge - fullRetirementAge) * 12;
+    adjustment = 0.0067 * monthsLate;
+  }
+
+  const monthlyBenefit = pia * (1 + adjustment);
+  const annualBenefit = monthlyBenefit * 12;
+  const lifetimeBenefit = annualBenefit * 20;
+
+  document.getElementById('ss-results').innerHTML = `
+    <div class="results-grid">
+      <div class="result-item result-highlight">
+        <div class="label">Monthly Benefit</div>
+        <div class="value">$${formatCurrency(monthlyBenefit)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">Annual Benefit</div>
+        <div class="value">$${formatCurrency(annualBenefit)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">20-Year Total</div>
+        <div class="value">$${formatCurrency(lifetimeBenefit)}</div>
+      </div>
+      <div class="result-item">
+        <div class="label">${retirementAge < fullRetirementAge ? 'Early' : retirementAge > fullRetirementAge ? 'Delayed' : 'Full'} Retirement</div>
+        <div class="value">${(adjustment * 100).toFixed(1)}%</div>
+      </div>
+    </div>
+    <p style="margin-top: 15px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+      Full retirement age: 67. Early: -6.7%/year. Delayed to 70: +24%.
+    </p>
+  `;
+}
+
+// ==========================================
+// INVOICE CALCULATOR
+// ==========================================
+
+function calculateInvoice() {
+  const items = [];
+  const itemRows = document.querySelectorAll('.invoice-item');
+  
+  itemRows.forEach(row => {
+    const desc = row.querySelector('.invoice-desc').value || '';
+    const qty = parseFloat(row.querySelector('.invoice-qty').value) || 0;
+    const price = parseFloat(row.querySelector('.invoice-price').value) || 0;
+    if (desc && qty && price) {
+      items.push({ desc, qty, price, total: qty * price });
+    }
+  });
+
+  const vatRate = parseFloat(document.getElementById('invoice-vat').value) || 20;
+  const discount = parseFloat(document.getElementById('invoice-discount').value) || 0;
+
+  const subtotal = items.reduce((sum, item) => sum + item.total, 0);
+  const discountAmount = subtotal * (discount / 100);
+  const afterDiscount = subtotal - discountAmount;
+  const vat = afterDiscount * (vatRate / 100);
+  const total = afterDiscount + vat;
+
+  let itemsHtml = items.map(item => `
+    <div class="tax-row">
+      <span class="label">${item.desc} (${item.qty} × £${item.price.toFixed(2)})</span>
+      <span class="amount">£${formatCurrency(item.total)}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('invoice-results').innerHTML = `
+    <div class="tax-breakdown">
+      ${itemsHtml}
+    </div>
+    <div class="results-grid" style="margin-top: 15px;">
+      <div class="result-item">
+        <div class="label">Subtotal</div>
+        <div class="value">£${formatCurrency(subtotal)}</div>
+      </div>
+      ${discount > 0 ? `
+      <div class="result-item">
+        <div class="label">Discount (${discount}%)</div>
+        <div class="value">-£${formatCurrency(discountAmount)}</div>
+      </div>
+      ` : ''}
+      <div class="result-item">
+        <div class="label">VAT (${vatRate}%)</div>
+        <div class="value">£${formatCurrency(vat)}</div>
+      </div>
+      <div class="result-item result-highlight">
+        <div class="label">Total Due</div>
+        <div class="value">£${formatCurrency(total)}</div>
+      </div>
+    </div>
+  `;
+}
+
+function addInvoiceItem() {
+  const container = document.getElementById('invoice-items');
+  const row = document.createElement('div');
+  row.className = 'invoice-item';
+  row.innerHTML = `
+    <div class="input-grid" style="grid-template-columns: 3fr 1fr 1fr; gap: 10px;">
+      <div class="input-group">
+        <input type="text" class="invoice-desc" placeholder="Description" value="">
+      </div>
+      <div class="input-group">
+        <input type="number" class="invoice-qty" placeholder="Qty" value="1">
+      </div>
+      <div class="input-group">
+        <input type="number" class="invoice-price" placeholder="£" value="100">
+      </div>
+    </div>
+  `;
+  container.appendChild(row);
 }

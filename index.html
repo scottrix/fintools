@@ -562,11 +562,51 @@
 <div id="historical-rates" class="tool-panel">
 <h2>Historical Exchange Rates</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Historical rate lookup requires external data APIs.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Year:</label>
+<select id="hist-year">
+<option value="2024">2024</option>
+<option value="2023">2023</option>
+<option value="2022">2022</option>
+<option value="2021">2021</option>
+<option value="2020">2020</option>
+<option value="2019">2019</option>
+<option value="2018">2018</option>
+<option value="2017">2017</option>
+<option value="2016">2016</option>
+<option value="2015">2015</option>
+<option value="2010">2010</option>
+<option value="2005">2005</option>
+<option value="2000">2000</option>
+<option value="1995">1995</option>
+</select>
 </div>
+<div class="input-group">
+<label>Amount:</label>
+<input type="number" id="hist-amount" value="100">
+</div>
+<div class="input-group">
+<label>From:</label>
+<select id="hist-from">
+<option value="GBP">GBP</option>
+<option value="USD">USD</option>
+<option value="EUR">EUR</option>
+</select>
+</div>
+<div class="input-group">
+<label>To:</label>
+<select id="hist-to">
+<option value="USD">USD</option>
+<option value="GBP">GBP</option>
+<option value="EUR">EUR</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="lookupHistoricalRate()">Look Up</button>
+</div>
+<div id="hist-results" class="results-panel"></div>
 </div>
 </div>
 
@@ -752,11 +792,24 @@
 <div id="ir35" class="tool-panel">
 <h2>IR35 Calculator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">IR35 status determination requires detailed contract review.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Day Rate (£):</label>
+<input type="number" id="ir35-rate" placeholder="e.g. 500" value="500">
 </div>
+<div class="input-group">
+<label>Working Days/Year:</label>
+<input type="number" id="ir35-days" placeholder="e.g. 220" value="220">
+</div>
+<div class="input-group">
+<label>Annual Expenses (£):</label>
+<input type="number" id="ir35-expenses" placeholder="e.g. 5000" value="5000">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateIR35()">Compare</button>
+</div>
+<div id="ir35-results" class="results-panel"></div>
 </div>
 </div>
 
@@ -1065,88 +1118,271 @@
 <div id="remote-salary" class="tool-panel">
 <h2>Remote Salary Adjuster</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Compare cost-of-living adjusted salaries for remote work.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Current Salary (£):</label>
+<input type="number" id="remote-current" placeholder="e.g. 75000" value="75000">
 </div>
+<div class="input-group">
+<label>Current Location:</label>
+<select id="remote-current-city">
+<option value="London">London</option>
+<option value="Manchester">Manchester</option>
+<option value="Edinburgh">Edinburgh</option>
+<option value="Bristol">Bristol</option>
+<option value="New York">New York</option>
+<option value="San Francisco">San Francisco</option>
+<option value="Berlin">Berlin</option>
+<option value="Tokyo">Tokyo</option>
+</select>
+</div>
+<div class="input-group">
+<label>New Location:</label>
+<select id="remote-new-city">
+<option value="Manchester">Manchester</option>
+<option value="London">London</option>
+<option value="Edinburgh">Edinburgh</option>
+<option value="Berlin">Berlin</option>
+<option value="Amsterdam">Amsterdam</option>
+<option value="Barcelona">Barcelona</option>
+<option value="Lisbon">Lisbon</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateRemoteSalary()">Adjust</button>
+</div>
+<div id="remote-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="paycheck" class="tool-panel">
 <h2>Paycheck Calculator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Detailed paycheck breakdown with all deductions.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Annual Salary (£):</label>
+<input type="number" id="pay-salary" placeholder="e.g. 50000" value="50000">
 </div>
+<div class="input-group">
+<label>Pay Frequency:</label>
+<select id="pay-frequency">
+<option value="monthly">Monthly</option>
+<option value="weekly">Weekly</option>
+<option value="biweekly">Bi-weekly</option>
+</select>
+</div>
+<div class="input-group">
+<label>Pension (%):</label>
+<input type="number" id="pay-pension" placeholder="e.g. 5" value="5">
+</div>
+<div class="input-group">
+<label>Student Loan:</label>
+<select id="pay-student-loan">
+<option value="none">None</option>
+<option value="plan1">Plan 1</option>
+<option value="plan2">Plan 2</option>
+<option value="plan4">Plan 4</option>
+<option value="plan5">Plan 5</option>
+<option value="postgrad">Postgraduate</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculatePaycheck()">Calculate</button>
+</div>
+<div id="pay-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="contractor-rate" class="tool-panel">
 <h2>Contractor Rate Calculator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Compare contractor day rates to equivalent permanent salaries.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Equivalent Perm Salary (£):</label>
+<input type="number" id="contract-perm" placeholder="e.g. 75000" value="75000">
 </div>
+<div class="input-group">
+<label>Working Days/Year:</label>
+<input type="number" id="contract-days" placeholder="e.g. 220" value="220">
+</div>
+<div class="input-group">
+<label>IR35 Status:</label>
+<select id="contract-ir35">
+<option value="outside">Outside IR35</option>
+<option value="inside">Inside IR35</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateContractorRate()">Calculate</button>
+</div>
+<div id="contract-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="debt-payoff" class="tool-panel">
 <h2>Debt Payoff Strategy</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Avalanche vs snowball debt payoff comparison.</p>
+<div id="debt-entries">
+<div class="debt-entry">
+<div class="input-grid" style="grid-template-columns: 2fr 1fr 1fr; gap: 10px;">
+<div class="input-group">
+<input type="number" class="debt-balance" placeholder="Balance £" value="5000">
 </div>
+<div class="input-group">
+<input type="number" class="debt-rate" placeholder="APR %" value="18" step="0.1">
+</div>
+<div class="input-group">
+<input type="number" class="debt-min" placeholder="Min £" value="100">
+</div>
+</div>
+</div>
+</div>
+<button onclick="addDebtEntry()" style="margin: 10px 0; padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer;">+ Add Debt</button>
+<div class="input-grid" style="margin-top: 15px;">
+<div class="input-group">
+<label>Monthly Payment (£):</label>
+<input type="number" id="debt-monthly" placeholder="e.g. 500" value="500">
+</div>
+<div class="input-group">
+<label>Strategy:</label>
+<select id="debt-strategy">
+<option value="avalanche">Avalanche (Highest Interest)</option>
+<option value="snowball">Snowball (Smallest Balance)</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateDebtPayoff()">Calculate</button>
+</div>
+<div id="debt-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="dti-calculator" class="tool-panel">
 <h2>Debt-to-Income Ratio</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Calculate your DTI ratio for mortgage applications.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Annual Gross Income (£):</label>
+<input type="number" id="dti-income" placeholder="e.g. 60000" value="60000">
 </div>
+<div class="input-group">
+<label>Mortgage/Rent (£/mo):</label>
+<input type="number" id="dti-mortgage" placeholder="e.g. 1200" value="1200">
+</div>
+<div class="input-group">
+<label>Car Loan (£/mo):</label>
+<input type="number" id="dti-car" placeholder="e.g. 300" value="300">
+</div>
+<div class="input-group">
+<label>Credit Cards (£/mo):</label>
+<input type="number" id="dti-credit" placeholder="e.g. 150" value="150">
+</div>
+<div class="input-group">
+<label>Other Debts (£/mo):</label>
+<input type="number" id="dti-other" placeholder="e.g. 100" value="0">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateDTI()">Calculate</button>
+</div>
+<div id="dti-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="bnpl" class="tool-panel">
 <h2>BNPL Comparison</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Compare Buy Now Pay Later options and costs.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Purchase Amount (£):</label>
+<input type="number" id="bnpl-amount" placeholder="e.g. 200" value="200">
 </div>
+<div class="input-group">
+<label>Repayment Weeks:</label>
+<select id="bnpl-weeks">
+<option value="6">6 weeks</option>
+<option value="8">8 weeks</option>
+<option value="12">12 weeks</option>
+</select>
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateBNPL()">Compare</button>
+</div>
+<div id="bnpl-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="apr-calculator" class="tool-panel">
 <h2>APR Calculator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Convert between APR and interest rate with fees.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Loan Amount (£):</label>
+<input type="number" id="apr-amount" placeholder="e.g. 5000" value="5000">
 </div>
+<div class="input-group">
+<label>Interest Rate (%):</label>
+<input type="number" id="apr-rate" placeholder="e.g. 8" value="8" step="0.1">
+</div>
+<div class="input-group">
+<label>Arrangement Fees (£):</label>
+<input type="number" id="apr-fees" placeholder="e.g. 150" value="150">
+</div>
+<div class="input-group">
+<label>Term (months):</label>
+<input type="number" id="apr-term" placeholder="e.g. 36" value="36">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateAPR()">Calculate</button>
+</div>
+<div id="apr-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="personal-inflation" class="tool-panel">
 <h2>Personal Inflation Rate</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Calculate your personal inflation rate based on spending.</p>
+<p style="margin-bottom: 15px; color: var(--text-secondary); font-size: 13px;">Enter your annual spending increase % for each category:</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Housing (%):</label>
+<input type="number" id="inf-housing" placeholder="e.g. 5" value="5" step="0.1">
 </div>
+<div class="input-group">
+<label>Transport (%):</label>
+<input type="number" id="inf-transport" placeholder="e.g. 4" value="4" step="0.1">
+</div>
+<div class="input-group">
+<label>Food (%):</label>
+<input type="number" id="inf-food" placeholder="e.g. 6" value="6" step="0.1">
+</div>
+<div class="input-group">
+<label>Utilities (%):</label>
+<input type="number" id="inf-utilities" placeholder="e.g. 8" value="8" step="0.1">
+</div>
+<div class="input-group">
+<label>Healthcare (%):</label>
+<input type="number" id="inf-health" placeholder="e.g. 3" value="3" step="0.1">
+</div>
+<div class="input-group">
+<label>Entertainment (%):</label>
+<input type="number" id="inf-entertainment" placeholder="e.g. 2" value="2" step="0.1">
+</div>
+<div class="input-group">
+<label>Other (%):</label>
+<input type="number" id="inf-other" placeholder="e.g. 3" value="3" step="0.1">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculatePersonalInflation()">Calculate</button>
+</div>
+<div id="pinf-results" class="results-panel"></div>
 </div>
 </div>
 
@@ -1213,33 +1449,109 @@
 <div id="pension-calculator" class="tool-panel">
 <h2>Pension Calculator (UK)</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">UK pension annual allowance and lifetime allowance calculator.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Your Age:</label>
+<input type="number" id="pen-age" placeholder="e.g. 35" value="35">
 </div>
+<div class="input-group">
+<label>Current Pot (£):</label>
+<input type="number" id="pen-pot" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Your Contribution (%):</label>
+<input type="number" id="pen-monthly" placeholder="e.g. 5" value="5" step="0.5">
+</div>
+<div class="input-group">
+<label>Employer Contribution (%):</label>
+<input type="number" id="pen-employer" placeholder="e.g. 3" value="3" step="0.5">
+</div>
+<div class="input-group">
+<label>Annual Salary (£):</label>
+<input type="number" id="pen-salary" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Expected Growth (%/yr):</label>
+<input type="number" id="pen-growth" placeholder="e.g. 5" value="5" step="0.5">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculatePension()">Calculate</button>
+</div>
+<div id="pen-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="401k-calculator" class="tool-panel">
 <h2>401k Calculator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">US 401k contribution and employer match calculator.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Your Age:</label>
+<input type="number" id="401k-age" placeholder="e.g. 35" value="35">
 </div>
+<div class="input-group">
+<label>Current Balance ($):</label>
+<input type="number" id="401k-balance" placeholder="e.g. 50000" value="50000">
+</div>
+<div class="input-group">
+<label>Annual Salary ($):</label>
+<input type="number" id="401k-salary" placeholder="e.g. 80000" value="80000">
+</div>
+<div class="input-group">
+<label>Your Contribution (%):</label>
+<input type="number" id="401k-contrib" placeholder="e.g. 10" value="10">
+</div>
+<div class="input-group">
+<label>Employer Match (%):</label>
+<input type="number" id="401k-match" placeholder="e.g. 4" value="4">
+</div>
+<div class="input-group">
+<label>Match Limit (%):</label>
+<input type="number" id="401k-limit" placeholder="e.g. 6" value="6">
+</div>
+<div class="input-group">
+<label>Expected Growth (%/yr):</label>
+<input type="number" id="401k-growth" placeholder="e.g. 7" value="7" step="0.5">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculate401k()">Calculate</button>
+</div>
+<div id="401k-results" class="results-panel"></div>
 </div>
 </div>
 
 <div id="social-security" class="tool-panel">
 <h2>Social Security Estimator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Estimate your Social Security benefits at different ages.</p>
+<div class="input-grid">
+<div class="input-group">
+<label>Current Age:</label>
+<input type="number" id="ss-age" placeholder="e.g. 35" value="35">
 </div>
+<div class="input-group">
+<label>Average Career Earnings ($/yr):</label>
+<input type="number" id="ss-earnings" placeholder="e.g. 60000" value="60000">
+</div>
+<div class="input-group">
+<label>Planned Retirement Age:</label>
+<select id="ss-retire-age">
+<option value="62">62 (Early)</option>
+<option value="65">65</option>
+<option value="67" selected>67 (Full)</option>
+<option value="70">70 (Delayed)</option>
+</select>
+</div>
+<div class="input-group">
+<label>Years Worked:</label>
+<input type="number" id="ss-years" placeholder="e.g. 35" value="35">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateSocialSecurity()">Estimate</button>
+</div>
+<div id="ss-results" class="results-panel"></div>
 </div>
 </div>
 
@@ -1318,11 +1630,40 @@
 <div id="invoice-calculator" class="tool-panel">
 <h2>Invoice Calculator</h2>
 <div class="tool-container">
-<div class="coming-soon">
-<span class="icon">🚧</span>
-<p>This calculator is coming soon!</p>
-<p class="subtitle">Create and calculate invoice totals with VAT.</p>
+<div id="invoice-items">
+<div class="invoice-item">
+<div class="input-grid" style="grid-template-columns: 3fr 1fr 1fr; gap: 10px;">
+<div class="input-group">
+<input type="text" class="invoice-desc" placeholder="Description" value="Consulting">
 </div>
+<div class="input-group">
+<input type="number" class="invoice-qty" placeholder="Qty" value="10">
+</div>
+<div class="input-group">
+<input type="number" class="invoice-price" placeholder="£" value="100">
+</div>
+</div>
+</div>
+</div>
+<button onclick="addInvoiceItem()" style="margin: 10px 0; padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; cursor: pointer;">+ Add Item</button>
+<div class="input-grid" style="margin-top: 15px;">
+<div class="input-group">
+<label>VAT Rate (%):</label>
+<select id="invoice-vat">
+<option value="20">20%</option>
+<option value="5">5%</option>
+<option value="0">0%</option>
+</select>
+</div>
+<div class="input-group">
+<label>Discount (%):</label>
+<input type="number" id="invoice-discount" placeholder="e.g. 0" value="0">
+</div>
+</div>
+<div class="button-group">
+<button onclick="calculateInvoice()">Calculate</button>
+</div>
+<div id="invoice-results" class="results-panel"></div>
 </div>
 </div>
     </main>
