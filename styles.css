@@ -652,3 +652,53 @@ button:active {
   color: var(--primary, #1da1f2);
   text-decoration: underline;
 }
+
+.affiliate-section {
+  margin: 1.5rem 0 0;
+  padding: 1rem;
+  border-top: 1px solid var(--border, #334155);
+}
+.affiliate-section h3 {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-bottom: 0.6rem;
+}
+.affiliate-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+.affiliate-card {
+  display: block;
+  background: var(--card-bg, #1e293b);
+  border: 1px solid var(--border, #334155);
+  border-radius: 8px;
+  padding: 0.8rem;
+  text-decoration: none;
+  color: var(--text-primary, #e2e8f0);
+  transition: border-color 0.2s;
+}
+.affiliate-card:hover {
+  border-color: var(--primary, #27ae60);
+}
+.affiliate-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.affiliate-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.4;
+}
+.affiliate-card-store {
+  font-size: 0.75rem;
+  color: var(--primary, #27ae60);
+  margin-top: 0.3rem;
+}
+.affiliate-disclaimer {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #94a3b8);
+  margin-top: 0.6rem;
+  line-height: 1.4;
+}
