@@ -77,9 +77,36 @@
     }
   }
 
+  function addShareSection() {
+    if (document.querySelector('.share-section')) return;
+    var main = document.querySelector('main');
+    if (!main) return;
+    var section = document.createElement('section');
+    section.className = 'section share-section';
+    var url = encodeURIComponent(window.location.href);
+    var title = encodeURIComponent(document.title);
+    section.innerHTML = '<h2>Share this page</h2><div class="share-buttons">' +
+      '<a class="share-btn share-twitter" href="https://twitter.com/intent/tweet?url=' + url + '&text=' + title + '" target="_blank" rel="noopener">Twitter</a>' +
+      '<a class="share-btn share-facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + url + '" target="_blank" rel="noopener">Facebook</a>' +
+      '<a class="share-btn share-linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url=' + url + '" target="_blank" rel="noopener">LinkedIn</a>' +
+      '<a class="share-btn share-whatsapp" href="https://wa.me/?text=' + title + '%20' + url + '" target="_blank" rel="noopener">WhatsApp</a>' +
+      '<a class="share-btn share-copy" href="#" data-url="' + window.location.href + '">Copy Link</a>' +
+      '</div>';
+    main.appendChild(section);
+    section.querySelector('.share-copy').addEventListener('click', function(e) {
+      e.preventDefault();
+      var btn = this;
+      navigator.clipboard.writeText(btn.getAttribute('data-url')).then(function() {
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = 'Copy Link'; }, 2000);
+      });
+    });
+  }
+
   function init() {
     rewriteLinks();
     addFastmailIcons();
+    addShareSection();
   }
 
   if (document.readyState === 'loading') {
