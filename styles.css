@@ -105,6 +105,20 @@ body {
     color: white;
 }
 
+.scottrix-home-link {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+}
+.scottrix-home-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
 .theme-toggle {
     background: rgba(255,255,255,0.2);
     border: none;
